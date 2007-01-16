@@ -681,7 +681,6 @@ function _invite_unblock($uid) {
 }
 
 function _invite_fetch_invite($invite_code) {
-  return db_fetch_object(db_query("SELECT COUNT(reg_code) AS count, uid AS referrer FROM {invite}
-                                   WHERE reg_code = %d GROUP BY referrer", $invite_code));
+  return db_fetch_object(db_query('SELECT COUNT(reg_code) AS count, uid AS referrer FROM {invite} WHERE reg_code = "%s" GROUP BY referrer', $invite_code));
 }
 
