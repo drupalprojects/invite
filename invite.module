@@ -400,11 +400,11 @@ function _invite_form() {
       $email_cell = $invite->email;
       if ($expiry < time()) {
         $status_cell = t('Expired');
-        $action_cell = l("Delete invitation",'invite/delete/'.urlencode($invite->email));
+        $action_cell = l(t("Delete invitation"),'invite/delete/'.urlencode($invite->email));
       }
       else {
         $status_cell = t('Pending');
-        $action_cell = l("Delete invitation",'invite/delete/'.urlencode($invite->email));
+        $action_cell = l(t("Delete invitation"),'invite/delete/'.urlencode($invite->email));
       }
     }
     else {
