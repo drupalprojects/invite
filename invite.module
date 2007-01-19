@@ -343,7 +343,7 @@ function invite_user($op, &$edit, &$user, $category = NULL) {
         _invite_unblock($user->uid);
       } 
       else {
-        watchdog('invite', 'User '.$user->name.' registration code failed', $link = NULL);
+        watchdog('invite', 'User '. check_plain($user->name) .' registration code failed', $link = NULL);
       }
       break;
   }   
