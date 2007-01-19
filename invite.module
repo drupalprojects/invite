@@ -647,14 +647,6 @@ function _invite_send_invite($op, $user_name = "[username]", $email ="[recipient
       	watchdog('invite', t("Invitation sending failed. Email: @email Subject: $subject Body: @body From: $from", array('@email' => $email, '@body' => $body)));
       }
       return $success;
-
-    case "display":
-      $output =  "To: $email <br>";
-      $output .= "From: $from <br>";
-      $output .= "Reply-To: $from <br>";
-      $output .= "Subject: $subject<br>";
-      $output .= "<p> $body </p>";
-      return $output;
   }
 }
 
