@@ -510,7 +510,7 @@ function _invite_check_invited($email, $uid) {
     return $rtn;
   }
 
-  if ((int)db_result(db_query('SELECT COUNT(*) AS count FROM users WHERE mail = "%s"', $email)) > 0) {
+  if ((int)db_result(db_query('SELECT COUNT(*) AS count FROM {users} WHERE mail = "%s"', $email)) > 0) {
     $rtn['message'] = 'The user you are trying to invite has already registered.'; 
     $rtn['is_invited']++;
     return $rtn;
