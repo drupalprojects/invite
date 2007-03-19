@@ -131,3 +131,4 @@ function invite_update_5() {
       break;
   }
   return $ret;
+}
