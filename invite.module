@@ -350,10 +350,8 @@ function invite_user($op, &$edit, &$account, $category = NULL) {
             // Escalate user role
             _invite_role_escalate($account);
 
-            // Activate user account for invite-only sites
-            if (variable_get('user_register', 1) == 'inviteonly') {
-              _invite_unblock($account->uid);
-            }
+            // Auto-approve user account
+            _invite_unblock($account->uid);
           }
         } 
         else {
