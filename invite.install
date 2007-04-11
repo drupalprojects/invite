@@ -17,7 +17,7 @@ function invite_install() {
           expiry int(11) NOT NULL default '0',
           timestamp int(11) NOT NULL default '0',
           received tinyint(3) unsigned NOT NULL default '0',
-          message text NOT NULL default '',
+          message text NOT NULL,
           PRIMARY KEY  (email),
           UNIQUE (reg_code)
         ) /*!40100 DEFAULT CHARACTER SET utf8 */;"
