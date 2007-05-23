@@ -662,6 +662,16 @@ function invite_delete($email) {
 }
 
 /**
+ * Implementation of hook_disable().
+ */
+function invite_disable() {
+  if (variable_get('user_register', 1) == 'inviteonly') {
+    variable_set('user_register', 1);
+    drupal_set_message(t('User registration option reset to %no_approval.', array('%no_approval' => t('Visitors can create accounts and no administrator approval is required.'))));
+  }
+}
+
+/**
  * @{
  * Module specific helper functions.
  */
