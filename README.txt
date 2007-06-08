@@ -56,6 +56,20 @@ I created the module with buddylist in mind, however is not dependant on buddyli
 
 It occured to me pretty early on that you could use this in conjunction with automember.module, to allow the users that acheive the higher role level when using that module, the ability to invite new people to the site, and new invitees to be relagated to a lower role, making for a kinda of self perpetuating ecosystem... 
 
+TWEAKS
+------
+
+When the site is set to allow new accounts by invitation only, it would be nice to remove the Create a new account tab that shows up if a user clicks on the Request a new password link.
+
+To solve this issue, you could add the following lines to your template.php:
+
+function phptemplate_menu_item_link($item, $link_item) {
+  if ($item['title'] == t('Create new account') && $item['path'] == 'user/register') return;
+  return l($item['title'], $link_item['path'], !empty($item['description']) ? array('title' => $item['description']) : array(), isset($item['query']) ? $item['query'] : NULL);
+}
+
+This prevents the "Create new account" menu item from being rendered.
+
 CONTACT
 -------
 
