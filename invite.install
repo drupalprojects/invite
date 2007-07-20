@@ -44,7 +44,7 @@ function invite_install() {
       break;
   }
 
-  if ($result1 && result2) {
+  if ($result1 && $result2) {
     drupal_set_message(t('The database schema for the invite module has been successfully created.'));
   }
   else {
