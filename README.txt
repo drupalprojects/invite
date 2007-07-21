@@ -73,19 +73,9 @@ This prevents the "Create new account" menu item from being rendered.
 CONTACT
 -------
 
-  Suggestions are welcome.   I am a member of a discussion list for discussion
-of this module and related personal blogging features.
-
-    http://softwaremanagers.org/drupal-personal-blogs
-
-
 Project page: http://drupal.org/project/invite
 
-I also maintain a page on my site for this module
-http://www.blogtown.ca/node/718
-
-
-Module Author:
+Original Author:
 David Hill a.k.a. Tatonca  <tatonca_@hotmail.com>
 
 
