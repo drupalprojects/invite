@@ -763,6 +763,13 @@ function invite_form_validate($form_id, &$edit) {
       $error .= implode(', ', array_map('check_plain', $failed_emails));
       drupal_set_message($error, 'error');
     }
+
+    // Check that there is at least one valid email remaining after filtering
+    // out dupes
+    if (!count($emails)) {
+      form_set_error('email');
+      return;
+    }
   
     // Check invite limit, fail to let the user choose which ones to send
     if (isset($edit['remaining_invites']) && count($emails) > $edit['remaining_invites']) {
