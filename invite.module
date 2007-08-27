@@ -955,8 +955,10 @@ function _invite_unblock($uid) {
  *   The tracking code to lookup the invite for.
  */
 function _invite_fetch_invite($invite_code) {
-  $invite = db_fetch_object(db_query("SELECT email, uid AS referrer, expiry FROM {invite} WHERE reg_code = '%s' AND timestamp = 0", $invite_code));
-  $invite->expired = $invite->expiry < time();
+  $result = db_query("SELECT email, uid AS referrer, expiry FROM {invite} WHERE reg_code = '%s' AND timestamp = 0", $invite_code);
+  if ($invite = db_fetch_object($result)) {
+    $invite->expired = ($invite->expiry < time() ? TRUE : FALSE);
+  }
   return $invite;
 }
 
