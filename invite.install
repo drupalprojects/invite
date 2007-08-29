@@ -69,6 +69,7 @@ function invite_uninstall() {
   variable_del('invite_page_title');
   variable_del('invite_default_mail_template');
   variable_del('invite_help_text');
+  variable_del('invite_num_ranks');
 }
 
 function invite_update_1() {
