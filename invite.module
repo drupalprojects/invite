@@ -653,7 +653,7 @@ function invite_form($op = 'page') {
       );
       $form['link'] = array(
         '#prefix' => '<div><small>',
-        '#value' => l(t('View your invites'), 'invite'),
+        '#value' => l(t('View your invites'), 'invite/list'),
         '#suffix' => '</small></div>',
       );
       break;
