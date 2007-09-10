@@ -232,3 +232,23 @@ function invite_update_8() {
   return $ret;
 }
 
+/**
+ * Change existing limits.
+ */
+function invite_update_9() {
+  $ret = array();
+  foreach (user_roles(0, 'send invitations') as $role) {
+    $role_no_space = str_replace(' ', '_', $role);
+    // INVITE_UNLIMITED_INVITES changed from 0 to -1
+    if (variable_get('invite_maxnum_'. $role_no_space, 0) == 0) {
+      variable_set('invite_maxnum_'. $role_no_space, -1);
+    }
+    // invite_maxmultiple_* have been changed to a simple boolean value
+    // (but using -1 instead of TRUE for compat with _invite_get_max_by_role())
+    $old_setting = variable_get('invite_maxmultiple_'. $role_no_space, 1);
+    variable_set('invite_multiple_'. $role_no_space, ($old_setting != 1 ? -1 : 0));
+  }
+  db_query("DELETE from {variable} WHERE name LIKE 'invite_maxmultiple_%%'");
+  return $ret;
+}
+
