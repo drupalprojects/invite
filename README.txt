@@ -33,6 +33,9 @@ INSTALLATION
   (admin/user/access).
   "send mass invitations": Allows users to send an invitation to multiple
   recipients (this was formerly a setting known as "limit per turn").
+  "track invitations": To give users access to the overview pages and
+  associated actions (withdraw etc). Useful to hide overviews from anonymous
+  users.
   "withdraw accepted invitations": This will allow your users to delete
   accepted invitations. It will also delete all invitations from/to a user upon
   termination of its account. Disable it to prevent users from deleting their
