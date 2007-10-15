@@ -126,6 +126,7 @@ function hook_invite($op, $args) {
     An invitation has been successfully send.
     $args['inviter']: The user account object of the person who did the
                       inviting.
+    $args['code']:    The invite code for the invitee.
 
   case 'escalate':
     Invitee has accepted an invitation and has been promoted to the appropriate
