@@ -955,9 +955,11 @@ function invite_form_submit($form_id, $edit) {
     $message = format_plural($count_failed, 'The entered e-mail address is invalid. Please correct it.', '@count entered e-mail addresses are invalid. Please correct them.');
     drupal_set_message($message, 'error');
   }
-  else {
-    drupal_goto('invite/list');
+  else if (user_access('track invitations')) {
+    return 'invite/list';
   }
+
+  return 'invite';
 }
 
 /**
