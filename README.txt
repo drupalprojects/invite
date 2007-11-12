@@ -36,6 +36,10 @@ INSTALLATION
   "track invitations": To give users access to the overview pages and
   associated actions (withdraw etc). Useful to hide overviews from anonymous
   users.
+  "view invite statistics": Allows users to view invite statistics on their
+  profile pages as well as view the Top inviters/User rank block.
+  "view own invite statistics": Same as above, but limits viewing statistics to
+  the user's own profile.
   "withdraw accepted invitations": This will allow your users to delete
   accepted invitations. It will also delete all invitations from/to a user upon
   termination of its account. Disable it to prevent users from deleting their

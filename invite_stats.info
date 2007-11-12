@@ -1,0 +1,6 @@
+; $Id$
+name = Invite Statistics
+description = "Displays some statistics about sent invitations."
+dependencies = invite
+package = Mail
+
