@@ -25,19 +25,22 @@ INSTALLATION
 
 * Give some roles permission to send invites at the Access control page
   (admin/user/access).
+
   "send mass invitations": Allows users to send an invitation to multiple
   recipients (this was formerly a setting known as "limit per turn").
   "track invitations": To give users access to the overview pages and
   associated actions (withdraw etc). Useful to hide overviews from anonymous
   users.
+  "withdraw accepted invitations": This will allow your users to delete
+  accepted invitations. It will also delete all invitations from/to a user upon
+  termination of its account. Disable it to prevent users from deleting their
+  account to be re-invited. With the help of the Cancel User Accounts module
+  it is possible to terminate user accounts by withdrawing an invitation.
+
   "view invite statistics": Allows users to view invite statistics on their
   profile pages as well as view the Top inviters/User rank block.
   "view own invite statistics": Same as above, but limits viewing statistics to
   the user's own profile.
-  "withdraw accepted invitations": This will allow your users to delete
-  accepted invitations. It will also delete all invitations from/to a user upon
-  termination of its account. Disable it to prevent users from deleting their
-  account to be re-invited.
 
 * Invite adds a new registration mode called 'New user registration by
   invitation only' to the User settings page (admin/user/settings), which allows
