@@ -2,5 +2,5 @@
 name = Invite
 description = "Allow your users to send and track invitations to join your site."
 dependencies = token
-package = Mail
+package = Invite
 
