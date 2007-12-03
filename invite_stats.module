@@ -100,22 +100,6 @@ function invite_stats_block($op = 'list', $delta = 0, $edit = array()) {
 }
 
 /**
- * Return counts of successful/pending/unsuccessful invitations.
- *
- * @param $uid
- *   The user id to calculate counts for.
- * @return
- *   An array consisting of three elements: accepted, pending and expired.
- */
-function invite_stats($uid) {
-  $now = time();
-  $count['accepted'] = db_result(db_query("SELECT COUNT(*) FROM {invite} WHERE uid = %d AND joined != 0", $uid));
-  $count['pending'] = db_result(db_query("SELECT COUNT(*) FROM {invite} WHERE uid = %d AND joined = 0 AND expiry >= %d", $uid, $now));
-  $count['expired'] = db_result(db_query("SELECT COUNT(*) FROM {invite} WHERE uid = %d AND joined = 0 AND expiry < %d", $uid, $now));
-  return $count;
-}
-
-/**
  * Render the "Top inviters" block.
  */
 function invite_stats_display_top_inviters() {
