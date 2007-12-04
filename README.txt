@@ -181,11 +181,21 @@ function phptemplate_menu_item_link($item, $link_item) {
 This prevents the 'Create new account' menu item from being rendered.
 
 
--- CONTACT --
+-- CREDITS --
 
 Current maintainer:
-Stefan Kudwien (smk-ka) - dev@unleashedmind.com
+  Stefan Kudwien (smk-ka) - dev@unleashedmind.com
+
+Sponsored by UNLEASHED MIND
+  Specialized in consulting and planning of Drupal powered sites, UNLEASHED
+  MIND offers installation, development, theming, customization, and hosting
+  to get you started. Visit http://www.unleashedmind.com for more information.
+
+Previous maintainers:
+  Andy Kirkham (AjK)
+  Nick Wilson (Nick Wilson)
+  Robert Douglass (robertDouglass)
 
 Original author:
-David Hill (tatonca) - tatonca_@hotmail.com
+  David Hill (tatonca)
 
