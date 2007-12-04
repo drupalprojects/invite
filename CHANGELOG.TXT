@@ -11,6 +11,7 @@ New features:
 - Refactored notification system to be less resource intensive.
 
 Bugs fixed:
+- #171765: Enhanced compatibility with LoginToboggan.
 - #197198: Fixed misleading error message when no permissions have been set up.
 - #196877: Prevent caching of user/register page (better approach).
 

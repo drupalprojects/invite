@@ -352,6 +352,16 @@ function invite_update_11() {
 }
 
 /**
+ * Change user_register value for enhanced compatibility with LoginToboggan.
+ */
+function invite_update_12() {
+  if (variable_get('user_register', 1) == 'inviteonly') {
+    variable_set('user_register', '1-inviteonly');
+  }
+  return array();
+}
+
+/**
  * @{
  * Invite 2.x updates
  */
