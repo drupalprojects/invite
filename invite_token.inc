@@ -46,7 +46,7 @@ function invite_token_list($type = 'all') {
 function theme_invite_token_help($type = 'all', $prefix = '[', $suffix = ']') {
   token_include();
 
-  // see http://drupal.org/node/127072
+  // @see http://drupal.org/node/127072
   $full_list = array();
   foreach ((array)$type as $t) {
     $full_list = array_merge($full_list, token_get_list($t));
