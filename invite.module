@@ -146,8 +146,8 @@ function invite_menu($may_cache) {
     );
   }
   else {
-    // Check for newly registered users and display notification
-    if ($send_access && $user->uid) {
+    // Notify current user about newly joined invitees.
+    if (!empty($user->invite_sent) && !module_invoke('throttle', 'status')) {
       invite_notify($user->uid);
     }
 
@@ -231,12 +231,12 @@ function invite_menu($may_cache) {
 function invite_notify($uid) {
   $result = db_query('SELECT invitee FROM {invite_notifications} WHERE uid = %d', $uid);
   while ($row = db_fetch_object($result)) {
-    $account = user_load(array('uid' => $row->invitee));
-    if ($account->status == 1) {
+    $account = user_load(array('uid' => $row->invitee, 'status' => 1));
+    if ($account) {
       drupal_set_message(t('!user (@email) has joined @site-name!', array('!user' => theme('username', $account), '@email' => $account->mail, '@site-name' => variable_get('site_name', t('Drupal')))));
+      db_query("DELETE FROM {invite_notifications} WHERE uid = %d AND invitee = %d", $uid, $row->invitee);
     }
   }
-  db_query("DELETE FROM {invite_notifications} WHERE uid = %d", $uid);
 }
 
 /**
