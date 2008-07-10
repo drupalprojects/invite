@@ -198,10 +198,9 @@ function _invite_admin_overview() {
     $cells = array();
     $cells[] = theme('username', $row);
     $cells[] = $row->invites;
-    $stats = invite_stats($row->uid);
-    $cells[] = $stats['accepted'];
-    $cells[] = $stats['pending'];
-    $cells[] = $stats['expired'];
+    $cells[] = invite_count($row->uid, 'accepted');
+    $cells[] = invite_count($row->uid, 'pending');
+    $cells[] = invite_count($row->uid, 'expired');
     $remaining = invite_get_remaining_invites($row);
     $cells[] = ($remaining == INVITE_UNLIMITED) ? '&infin;' : $remaining;
     $cells[] = l(t('details'), "admin/user/invite/details/$row->uid", array(), $query);
