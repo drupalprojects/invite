@@ -724,7 +724,7 @@ function invite_page_form($remaining_invites, $edit = array()) {
   }
   // Add prefix.
   $prefix = t('Re:');
-  if ($edit && substr($subject, 0, strlen($prefix)) != $prefix) {
+  if ($edit && drupal_substr($subject, 0, strlen($prefix)) != $prefix) {
     $subject = $prefix .' '. $subject;
   }
   if (variable_get('invite_subject_editable', FALSE)) {
@@ -758,7 +758,7 @@ function invite_page_form($remaining_invites, $edit = array()) {
 
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Submit'),
+    '#value' => t('Send invite'),
   );
 
   return $form;

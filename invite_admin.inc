@@ -2,6 +2,11 @@
 // $Id$
 
 /**
+ * @file
+ * Administration functions for invite module.
+ */
+
+/**
  * Menu callback; display invite settings form.
  */
 function _invite_settings() {
@@ -49,7 +54,7 @@ function _invite_settings() {
     $role_no_space = str_replace(' ', '_', $role);
     $form['role'][$role_no_space] = array(
       '#type' => 'fieldset',
-      '#title' => t('@role settings', array('@role' => ucfirst($role))),
+      '#title' => t('@role settings', array('@role' => drupal_ucfirst($role))),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );

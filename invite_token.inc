@@ -2,6 +2,11 @@
 // $Id$
 
 /**
+ * @file
+ * Token integration functions for invite module.
+ */
+
+/**
  * Implementation of hook_token_values().
  */
 function invite_token_values($type = 'all', $object = NULL) {
@@ -37,12 +42,13 @@ function invite_token_list($type = 'all') {
  * of their replacement values.
  *
  * @param type
- *    The token types to display documentation for. Defaults to 'all'.
+ *   The token types to display documentation for. Defaults to 'all'.
  * @param prefix
- *    The prefix your module will use when parsing tokens. Defaults to '['
+ *   The prefix your module will use when parsing tokens. Defaults to '['
  * @param suffix
- *    The suffix your module will use when parsing tokens. Defaults to ']'
- * @return An HTML table containing the formatting docs.
+ *   The suffix your module will use when parsing tokens. Defaults to ']'
+ * @return
+ *   An HTML table containing the formatting docs.
  */
 function theme_invite_token_help($type = 'all', $prefix = '[', $suffix = ']') {
   token_include();
