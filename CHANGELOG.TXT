@@ -2,6 +2,8 @@
 
 Invite 5.x-1.xx, xxxx-xx-xx
 ---------------------------
+#214426 by barako: Updated French translation.
+
 New features:
 - #207419 by Andrew Young: Look up invitation for new users who didn't use invitation link.
 - #214426 by Olivier Tavard: Added french translation.
