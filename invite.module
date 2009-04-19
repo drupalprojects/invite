@@ -154,7 +154,7 @@ function invite_menu($may_cache) {
     if (arg(0) == 'user' && is_numeric(arg(1)) && arg(1) == $user->uid) {
       $items[] = array(
         'path' => 'user/'. arg(1) .'/invites',
-        'title' => t('Track invitations'),
+        'title' => t('Invitations'),
         'callback' => 'invite_user_overview',
         'access' => $track_access,
         'type' => MENU_LOCAL_TASK,
