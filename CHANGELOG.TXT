@@ -2,6 +2,7 @@
 
 Invite 5.x-2.x, xxxx-xx-xx
 --------------------------
+#364971 by jaydub: Fixed administrative overview query for PostgreSQL.
 #310775 by Barrett, sun: Fixed SQL error when no emails are left after filtering
   out registered users.
 #323661 by tcconway: Removed "Track" from local task title "Track Invitations".

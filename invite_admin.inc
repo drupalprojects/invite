@@ -190,7 +190,7 @@ function _invite_admin_overview() {
     $query = 'filter='. $filter_args;
     unset($_SESSION[INVITE_ADMIN_SESSION]);
   }
-  $sql  = "SELECT i.uid, u1.name, COUNT(*) AS invites, u1.data FROM {invite} i INNER JOIN {users} u1 ON u1.uid = i.uid". $filter ." GROUP BY i.uid";
+  $sql  = "SELECT i.uid, u1.name, COUNT(*) AS invites, u1.data FROM {invite} i INNER JOIN {users} u1 ON u1.uid = i.uid". $filter ." GROUP BY i.uid, u1.name, u1.data";
   $sql .= tablesort_sql($header);
   $count_sql  = "SELECT COUNT(DISTINCT i.uid) FROM {invite} i". $filter;
   $result = pager_query($sql, 50, 0, $count_sql, $filter_args);
