@@ -2,6 +2,8 @@
 
 Invite 5.x-2.x, xxxx-xx-xx
 --------------------------
+#214426 by barako: Updated French translation.
+
 New features:
 - Added administrator interface showing invite history.
 - Moved the user-specific tracking page to the user profile.
