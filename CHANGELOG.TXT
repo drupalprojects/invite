@@ -2,6 +2,7 @@
 
 Invite 5.x-1.xx, xxxx-xx-xx
 ---------------------------
+#160837 by lelizondob: Updated Spanish translation.
 #214426 by barako: Updated French translation.
 
 New features:
