@@ -928,7 +928,7 @@ function _invite_get_emails($string) {
 
   $emails = array_unique(split("[,\n\r]", $string));
   foreach ($emails as $email) {
-    $email = trim($email);
+    $email = preg_replace('/^.*<(.*)>$/', '${1}', trim($email));
     if ($email) {
       if (preg_match($rx, $email, $match)) {
         $valid_emails[] = $match[1];
