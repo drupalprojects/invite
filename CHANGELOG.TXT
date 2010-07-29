@@ -2,6 +2,8 @@
 
 Invite 5.x-2.x, xxxx-xx-xx
 --------------------------
+#695034 by smk-ka: Added a new permission to restrict access to administrative
+  pages.
 #364971 by jaydub: Fixed administrative overview query for PostgreSQL.
 #310775 by Barrett, sun: Fixed SQL error when no emails are left after filtering
   out registered users.

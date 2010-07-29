@@ -81,6 +81,7 @@ function _invite_module_help() {
  */
 function invite_perm() {
   return array(
+    'administer invitations',
     'send invitations',
     'send mass invitations',
     'track invitations',
@@ -97,7 +98,7 @@ function invite_menu($may_cache) {
 
   $send_access = user_access('send invitations');
   $track_access = user_access('track invitations');
-  $admin_access = user_access('administer site configuration');
+  $admin_access = user_access('administer invitations');
 
   if ($may_cache) {
     $items[] = array(
