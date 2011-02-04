@@ -7,12 +7,8 @@
  */
 
 /**
- * Install the initial schema.
+ * Implements hook_schema().
  */
-function invite_install() {
-  drupal_install_schema('invite');
-}
-
 function invite_schema() {
   $schema['invite'] = array(
     'description' => 'The base table for invites.',
@@ -115,12 +111,9 @@ function invite_schema() {
 }
 
 /**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().
  */
 function invite_uninstall() {
-  // Drop database schema.
-  drupal_uninstall_schema('invite');
-
   // Delete variables
   $sql = "DELETE from {variable} WHERE name LIKE '%s%%'";
   db_query($sql, 'invite_target_role_');
@@ -147,7 +140,7 @@ function invite_uninstall() {
  * Helper function to update tokens.
  */
 function _invite_update_tokens($variables, $old, $new) {
-  foreach ((array)$variables as $variable) {
+  foreach ((array) $variables as $variable) {
     if ($value = variable_get($variable, NULL)) {
       $value = str_replace($old, $new, $value);
       variable_set($variable, $value);
@@ -160,12 +153,15 @@ function _invite_update_tokens($variables, $old, $new) {
  */
 function _invite_add_permission($rid, $permission) {
   if ($permission) {
-    $current_perm = db_result(db_query("SELECT perm FROM {permission} WHERE rid = %d", $rid));
+    $current_perm = db_query("SELECT permission FROM {role_permission} WHERE rid = :rid", array(':rid' => $rid))->fetchField();
     if ($current_perm != '') {
       $current_perm .= ', ';
     }
     $current_perm .= $permission;
-    db_query("UPDATE {permission} SET perm = '%s' WHERE rid = %d", $current_perm, $rid);
+    db_update('role_permission')
+      ->fields(array('permission' => $current_perm))
+      ->condition('rid', $rid)
+      ->execute();
   }
 }
 
@@ -178,14 +174,15 @@ function _invite_update_role_name_to_id($variable) {
     // Look for both a translated (D6) and untranslated (D5) variables.
     // A translated one is newer and has therefore precendence.
     $translated_role = str_replace(' ', '_', t($role->name));
-    $value = variable_get($variable .'_'. $translated_role, NULL);
+    $value = variable_get($variable . '_' . $translated_role, NULL);
     if (is_null($value)) {
       $untranslated_role = str_replace(' ', '_', $role->name);
-      $value = variable_get($variable .'_'. $untranslated_role, NULL);
+      $value = variable_get($variable . '_' . $untranslated_role, NULL);
     }
     if (!is_null($value)) {
-      variable_set($variable .'_'. $role->rid, $value);
-      db_query("DELETE FROM {variable} WHERE name IN('%s', '%s')", $variable .'_'. $translated_role, $variable .'_'. $untranslated_role);
+      variable_set($variable . '_' . $role->rid, $value);
+      // @TODO: Should be converted to db_delete()
+      db_query("DELETE FROM {variable} WHERE name IN('%s', '%s')", $variable . '_' . $translated_role, $variable . '_' . $untranslated_role);
     }
   }
 }
@@ -211,7 +208,7 @@ function invite_update_7() {
  */
 function invite_update_8() {
   $ret = array();
-  db_change_field($ret, 'invite', 'message', 'data', array('type' => 'text', 'not null' => TRUE, 'default' => ''));
+  db_change_field('invite', 'message', 'data', array('type' => 'text', 'not null' => TRUE, 'default' => ''));
 
   // Convert existing messages
   $result = db_query("SELECT reg_code, data FROM {invite} WHERE data <> ''");
@@ -236,13 +233,13 @@ function invite_update_9() {
     $role_no_space = str_replace(' ', '_', $role);
 
     // INVITE_UNLIMITED_INVITES changed from 0 to -1
-    if (variable_get('invite_maxnum_'. $role_no_space, 0) == 0) {
-      variable_set('invite_maxnum_'. $role_no_space, -1);
+    if (variable_get('invite_maxnum_' . $role_no_space, 0) == 0) {
+      variable_set('invite_maxnum_' . $role_no_space, -1);
     }
 
     // Convert settings that have been moved to the permissions table
     $perms = array();
-    if (variable_get('invite_maxmultiple_'. $role_no_space, 1) != 1) {
+    if (variable_get('invite_maxmultiple_' . $role_no_space, 1) != 1) {
       $perms[] = 'send mass invitations';
     }
     if (variable_get('invite_allow_join_delete', 0)) {
@@ -255,14 +252,30 @@ function invite_update_9() {
   // Expiry periods changed
   $expiry = variable_get('invite_expiry', 30);
   switch ($expiry) {
-    case  5: $expiry =  7; break;
-    case 10: $expiry = 14; break;
-    case 15: $expiry = 14; break;
-    case 20: $expiry = 30; break;
-    case 25: $expiry = 30; break;
-    case 30: $expiry = 30; break;
-    case 45: $expiry = 60; break;
-    case 60: $expiry = 60; break;
+    case  5:
+      $expiry =  7;
+      break;
+    case 10:
+      $expiry = 14;
+      break;
+    case 15:
+      $expiry = 14;
+      break;
+    case 20:
+      $expiry = 30;
+      break;
+    case 25:
+      $expiry = 30;
+      break;
+    case 30:
+      $expiry = 30;
+      break;
+    case 45:
+      $expiry = 60;
+      break;
+    case 60:
+      $expiry = 60;
+      break;
   }
   variable_set('invite_expiry', $expiry);
 
@@ -328,13 +341,13 @@ function invite_update_12() {
  */
 function invite_update_200() {
   $ret = array();
-  db_drop_primary_key($ret, 'invite');
-  db_add_index($ret, 'invite', 'email', array('email'));
-  db_change_field($ret, 'invite', 'mid', 'invitee', array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0));
-  db_change_field($ret, 'invite', 'timestamp', 'joined', array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0));
-  db_add_field($ret, 'invite', 'created', array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0));
-  db_add_field($ret, 'invite', 'canceled', array('type' => 'int', 'size' => 'tiny', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0));
-  db_add_field($ret, 'invite', 'resent', array('type' => 'int', 'size' => 'tiny', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0));
+  db_drop_primary_key('invite');
+  db_add_index('invite', 'email', array('email'));
+  db_change_field('invite', 'mid', 'invitee', array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0));
+  db_change_field('invite', 'timestamp', 'joined', array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0));
+  db_add_field('invite', 'created', array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0));
+  db_add_field('invite', 'canceled', array('type' => 'int', 'size' => 'tiny', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0));
+  db_add_field('invite', 'resent', array('type' => 'int', 'size' => 'tiny', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0));
   return $ret;
 }
 
@@ -343,7 +356,7 @@ function invite_update_200() {
  */
 function invite_update_201() {
   $ret = array();
-  db_create_table($ret, 'invite_notifications', array(
+  db_create_table('invite_notifications', array(
     'description' => 'Stores notifications of inviters.',
     'fields' => array(
       'uid' => array(
@@ -366,9 +379,10 @@ function invite_update_201() {
     )
   ));
   // Convert old data
-  $ret[] = update_sql("INSERT INTO {invite_notifications} (uid, invitee) SELECT uid, invitee FROM {invite} WHERE joined <> 0 AND received = 0");
+  // @TODO: Should be converted to db_insert
+  db_query("INSERT INTO {invite_notifications} (uid, invitee) SELECT uid, invitee FROM {invite} WHERE joined <> 0 AND received = 0");
   // Drop old column
-  db_drop_field($ret, 'invite', 'received');
+  db_drop_field('invite', 'received');
   return $ret;
 }
 
@@ -377,8 +391,8 @@ function invite_update_201() {
  */
 function invite_update_202() {
   $ret = array();
-  db_drop_index($ret, 'invite_notifications', 'uid');
-  db_add_unique_key($ret, 'invite_notifications', 'uid_invitee', array('uid', 'invitee'));
+  db_drop_index('invite_notifications', 'uid');
+  db_add_unique_key('invite_notifications', 'uid_invitee', array('uid', 'invitee'));
   return $ret;
 }
 

@@ -8,7 +8,7 @@
  */
 
 /**
- * Implementation of hook_invite().
+ * Implements hook_invite().
  *
  * Withdrawing an invitation leads to termination of invited user's account.
  */
@@ -16,11 +16,11 @@ function invite_cancel_account_invite($op, $args) {
   switch ($op) {
     case 'cancel':
       if (user_access('withdraw accepted invitations')) {
-        if ($account = user_load(array('mail' => $args['email']))) {
-          user_delete(array(), $account->uid);
+        if ($account = user_load_by_mail($args['email'])) {
+          // @todo Make $method configurable.
+          user_cancel(array(), $account->uid, 'user_cancel_delete');
         }
       }
       break;
   }
 }
-

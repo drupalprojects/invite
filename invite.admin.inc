@@ -67,18 +67,18 @@ function invite_settings() {
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );
-    $form['role'][$rid]['invite_target_role_'. $rid] = array(
+    $form['role'][$rid]['invite_target_role_' . $rid] = array(
       '#type' => 'select',
       '#title' => t('Target role'),
-      '#default_value' => variable_get('invite_target_role_'. $rid, DRUPAL_AUTHENTICATED_RID),
+      '#default_value' => variable_get('invite_target_role_' . $rid, DRUPAL_AUTHENTICATED_RID),
       '#options' => $target_roles,
       '#description' => t('You may choose to add invited users to another role (in addition to the default role set in the general section) when they have been invited by a member of %role.', array('%role' => $role)),
       '#required' => TRUE,
     );
-    $form['role'][$rid]['invite_maxnum_'. $rid] = array(
+    $form['role'][$rid]['invite_maxnum_' . $rid] = array(
       '#type' => 'select',
       '#title' => t('Invitation limit'),
-      '#default_value' => variable_get('invite_maxnum_'. $rid, INVITE_UNLIMITED),
+      '#default_value' => variable_get('invite_maxnum_' . $rid, INVITE_UNLIMITED),
       '#options' => array(5 => 5, 10 => 10, 20 => 20, 50 => 50, 100 => 100, 500 => 500, 1000 => 1000, INVITE_UNLIMITED => t('unlimited')),
       '#description' => t('Allows to limit the total number of invitations members of %role can send.', array('%role' => $role)),
       '#multiple' => FALSE,
@@ -98,7 +98,7 @@ function invite_settings() {
     '#type' => 'textfield',
     '#title' => t('Subject'),
     '#default_value' => variable_get('invite_subject', t('[inviter-raw] has sent you an invite!')),
-    '#description' => t('Type the default subject of the invitation e-mail.') .' '. t('Use the syntax [token] if you want to insert a replacement pattern.'),
+    '#description' => t('Type the default subject of the invitation e-mail.') . ' ' . t('Use the syntax [token] if you want to insert a replacement pattern.'),
     '#required' => TRUE,
   );
   $form['email']['invite_subject_editable'] = array(
@@ -121,7 +121,7 @@ function invite_settings() {
     '#collapsed' => TRUE,
   );
   $form['email']['token_help']['help'] = array(
-    '#value' => theme('invite_token_help', array('user', 'profile', 'invite')),
+    '#value' => theme('invite_token_help', array('type' => array('user', 'profile', 'invite'))),
   );
   $form['email']['invite_use_users_email'] = array(
     '#type' => 'radios',
@@ -193,24 +193,35 @@ function invite_admin_overview() {
     t('Operations'),
   );
 
-  $now = time();
+  $result = db_select('invite', 'i')
+    ->fields('i', array('uid'))
+    ->extend('TableSort')
+    ->extend('PagerDefault');
+  $result->innerJoin('users', 'u1', 'u1.uid = i.uid');
+  $result->addExpression('COUNT(*)', 'invites');
+
   $filter = $filter_args = $query = NULL;
   $output = drupal_get_form('invite_admin_filter_form');
   if (isset($_SESSION[INVITE_ADMIN_SESSION])) {
-    $filter = " INNER JOIN {users} u2 ON u2.uid = i.invitee WHERE LOWER(u2.name) LIKE LOWER('%s%%')";
+    $result->innerJoin('users', 'u2', 'u2.uid = i.invite');
+    $result->where("LOWER(u2.name) LIKE LOWER('%s%%')");
+    
     $filter_args = $_SESSION[INVITE_ADMIN_SESSION];
-    $query = 'filter='. $filter_args;
+    $query = 'filter=' . $filter_args;
     unset($_SESSION[INVITE_ADMIN_SESSION]);
   }
-  $sql  = "SELECT i.uid, u1.name, COUNT(*) AS invites, u1.data FROM {invite} i INNER JOIN {users} u1 ON u1.uid = i.uid". $filter ." GROUP BY i.uid, u1.name, u1.data";
-  $sql .= tablesort_sql($header);
-  $count_sql  = "SELECT COUNT(DISTINCT i.uid) FROM {invite} i". $filter;
-  $result = pager_query($sql, 50, 0, $count_sql, $filter_args);
-  $rows = array();
+  //$result = db_query("SELECT i.uid, u1.name, COUNT(*) AS invites, u1.data FROM {invite} i INNER JOIN {users} u1 ON u1.uid = i.uid" . $filter . " GROUP BY i.uid, u1.name, u1.data");
 
-  while ($row = db_fetch_object($result)) {
+  $result->groupBy('i.uid');
+  $result->groupBy('u1.name');
+  $result->groupBy('u1.data');
+  $result->orderByHeader($header);
+  $result = $result->execute()->fetchAll();
+  
+  $rows = array();
+  foreach ($result as $row) {
     $cells = array();
-    $cells[] = theme('username', $row);
+    $cells[] = theme('username', array('account' => $row));
     $cells[] = $row->invites;
     $cells[] = invite_count($row->uid, 'accepted');
     $cells[] = invite_count($row->uid, 'pending');
@@ -221,12 +232,12 @@ function invite_admin_overview() {
     $rows[] = $cells;
   }
 
-  $output .= theme('table', $header, $rows, array('id' => 'invite'));
+  $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'invite')));
   if (!$rows) {
     $output .= t('No inviters found.');
   }
   else {
-    $output .= theme('pager', array(), 50, 0);
+    $output .= theme('pager');
   }
 
   return $output;
@@ -269,7 +280,7 @@ function invite_admin_filter_form_submit($form, &$form_state) {
  *   A user object.
  */
 function invite_admin_details($account) {
-  $now = time();
+  $now = REQUEST_TIME;
   $status_sort = '';
   if (isset($_GET['order']) && $_GET['order'] == t('Status')) {
     $sort = db_escape_string($_GET['sort']);
@@ -288,34 +299,45 @@ function invite_admin_details($account) {
     array('data' => t('Status'), 'field' => $status_sort),
   );
 
+  $result = db_select('invite', 'i')
+    ->fields('i', array('email, invitee'))
+    ->extend('TableSort')
+    ->extend('PagerDefault');
+  $result->leftJoin('users', 'u', 'u.uid = i.invitee AND u.uid <> 0');
+  $reults->condition('i.uid', $account->uid);
+  
   $output = '';
   $filter = $filter_args = NULL;
   if (isset($_GET['filter']) && $_GET['filter'] != '') {
-    $filter = " AND LOWER(u.name) LIKE '%s%%'";
+    $results->where("LOWER(u.name) LIKE '%s%%'");
+    //$filter = " AND LOWER(u.name) LIKE '%s%%'";
     $filter_args = $_GET['filter'];
     $output .= drupal_get_form('invite_admin_details_filter_form', $account->uid, $_GET['filter']);
   }
-  $sql  = "SELECT i.email, i.invitee AS uid, u.name, i.created, i.expiry, i.joined, i.canceled FROM {invite} i LEFT JOIN {users} u ON u.uid = i.invitee AND u.uid <> 0 WHERE i.uid = %d". $filter;
-  $sql .= tablesort_sql($header);
-  $result = pager_query($sql, 50, 0, NULL, $account->uid, $filter_args);
-  $rows = array();
+  //$sql  = "SELECT i.email, i.invitee AS uid, u.name, i.created, i.expiry, i.joined, i.canceled FROM {invite} i LEFT JOIN {users} u ON u.uid = i.invitee AND u.uid <> 0 WHERE i.uid = %d" . $filter;
+  //$sql .= tablesort_sql($header);
+  //$result = pager_query($sql, 50, 0, NULL, $account->uid, $filter_args);
 
-  while ($row = db_fetch_object($result)) {
+  $result->orderByHeader($header);
+  $result = $result->execute()->fetchAll();
+
+  $rows = array();
+  foreach ($result as $row) {
     $cells = array();
     $cells[] = check_plain($row->email);
-    $cells[] = $row->joined ? theme('username', $row) : '';
+    $cells[] = $row->joined ? theme('username', array('account' => $row)) : '';
     $cells[] = format_date($row->created, 'custom', 'Y-m-d');
     $cells[] = format_date($row->expiry, 'custom', 'Y-m-d');
     $cells[] = $row->canceled ? t('Withdrawn') : ($row->joined ? t('Joined') : ($row->expiry < $now ? t('Expired') : t('Pending')));
     $rows[] = $cells;
   }
 
-  $output .= theme('table', $header, $rows, array('id' => 'invite'));
+  $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'invite')));
   if (!$rows) {
     $output .= t('No invitees found.');
   }
   else {
-    $output .= theme('pager', array(), 50, 0);
+    $output .= theme('pager');
   }
 
   return $output;
@@ -352,26 +374,44 @@ function invite_user_overview($page = 'accepted') {
   global $user;
 
   $rows = array();
-  $time = time();
   $profile_access = user_access('access user profiles');
   $allow_delete = user_access('withdraw accepted invitations');
 
+  $query = db_select('invite', 'i')
+    ->fields('i')
+    ->extend('PagerDefault')
+    ->condition('i.uid', $user->uid)
+    ->condition('canceled', 0);
+  
   switch ($page) {
     case 'accepted':
+    // @TODO: I believe that if default is at the top it will always be
+    // defaulted to and the other cases will never be hit.
     default:
-      $sql = "SELECT i.*, u.uid AS account FROM {invite} i LEFT JOIN {users} u ON u.uid = i.invitee AND u.uid <> 0 WHERE i.uid = %d AND i.joined <> 0 AND canceled = 0 ORDER BY u.uid DESC";
+      $query->leftJoin('users', 'u', 'u.uid = i.invitee AND u.uid <> 0');
+      $query->fields('u', array('uid'));
+      $query->condition('i.joined', 0, '<>');
+      $query->orderBy('u.uid', 'DESC');
+      //$sql = "SELECT i.*, u.uid AS account FROM {invite} i LEFT JOIN {users} u ON u.uid = i.invitee AND u.uid <> 0 WHERE i.uid = %d AND i.joined <> 0 AND canceled = 0 ORDER BY u.uid DESC";
       break;
     case 'pending':
-      $sql = "SELECT * FROM {invite} WHERE uid = %d AND joined = 0 AND canceled = 0 AND expiry >= %d ORDER BY expiry DESC";
+      $query->condition('i.joined', 0);
+      $query->condition('i.expiry', REQUEST_TIME, '>=');
+      $query->orderBy('i.expiry', 'DESC');
+      //$sql = "SELECT * FROM {invite} WHERE uid = %d AND joined = 0 AND canceled = 0 AND expiry >= %d ORDER BY expiry DESC";
       break;
     case 'expired':
-      $sql = "SELECT * FROM {invite} WHERE uid = %d AND joined = 0 AND canceled = 0 AND expiry < %d ORDER BY expiry DESC";
+      $query->condition('i.joined', 0);
+      $query->condition('i.expiry', REQUEST_TIME, '<');
+      $query->orderBy('i.expiry', 'DESC');
+      //$sql = "SELECT * FROM {invite} WHERE uid = %d AND joined = 0 AND canceled = 0 AND expiry < %d ORDER BY expiry DESC";
       break;
   }
 
-  $result = pager_query($sql, 50, 0, NULL, $user->uid, $time);
-
-  while ($invite = db_fetch_object($result)) {
+  //$result = pager_query($sql, 50, 0, NULL, $user->uid, REQUEST_TIME);
+  $result = $query->execute()->fetchAll();
+  
+  foreach ($result as $invite) {
     $row = array();
     switch ($page) {
       case 'accepted':
@@ -379,7 +419,7 @@ function invite_user_overview($page = 'accepted') {
         $account_exists = !is_null($invite->account);
 
         if ($profile_access && $account_exists) {
-          $row[] = l($invite->email, 'user/'. $invite->invitee, array('title' => t('View user profile.')));
+          $row[] = l($invite->email, 'user/' . $invite->invitee, array('title' => t('View user profile.')));
         }
         else {
           $row[] = check_plain($invite->email);
@@ -391,7 +431,7 @@ function invite_user_overview($page = 'accepted') {
 
       case 'pending':
       case 'expired':
-        $expired = ($invite->expiry < $time);
+        $expired = ($invite->expiry < REQUEST_TIME);
 
         $row[] = check_plain($invite->email);
         $row[] = $expired ? t('Expired') : t('Pending');
@@ -402,7 +442,7 @@ function invite_user_overview($page = 'accepted') {
     $rows[] = $row;
   }
 
-  return theme('invite_user_overview', $rows);
+  return theme('invite_user_overview', array('items' => $rows));
 }
 
 /**
@@ -413,11 +453,12 @@ function invite_user_overview($page = 'accepted') {
  *
  * @ingroup themeable
  */
-function theme_invite_user_overview($items) {
+function theme_invite_user_overview($variables) {
+  $items = $variables['items'];
   if (count($items) > 0) {
     $headers = array(t('E-mail'), t('Status'), array('data' => t('Operations'), 'colspan' => 2));
-    $output  = theme('table', $headers, $items, array('id' => 'invites'));
-    $output .= theme('pager', NULL, 50, 0);
+    $output  = theme('table', array('header' => $headers, 'rows' => $items, 'attributes' => array('id' => 'invites')));
+    $output .= theme('pager');
   }
   else {
     $output = t('No invitations available.');

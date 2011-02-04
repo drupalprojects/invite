@@ -1,7 +1,8 @@
 // $Id$
 
-Invite 6.x-2.x, xxxx-xx-xx
+Invite 7.x-2.x, xxxx-xx-xx
 --------------------------
+#671818 by hadsie, smk-ka: Port to Drupal 7.
 by smk-ka: Cleaned up README.
 #496894 by seutje, smk-ka: Increased size of e-mail subject field.
 #871090 by smk-ka: Fixed registration message appears on password reset form.

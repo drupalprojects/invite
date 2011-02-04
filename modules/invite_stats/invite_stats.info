@@ -1,6 +1,7 @@
 ; $Id$
 name = Invite Statistics
 description = "Displays some statistics about sent invitations."
-dependencies[] = invite
+core = 7.x
 package = Invite
-core = 6.x
+dependencies[] = invite
+files[] = invite_stats.module

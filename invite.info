@@ -1,6 +1,11 @@
 ; $Id$
 name = Invite
 description = "Allow your users to send and track invitations to join your site."
-dependencies[] = token
+core = 7.x
 package = Invite
-core = 6.x
+dependencies[] = token
+files[] = invite.module
+files[] = invite.admin.inc
+files[] = invite.token.inc
+files[] = invite.install
+configure = admin/people/invite/settings
