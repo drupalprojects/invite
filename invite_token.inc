@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * For a given context, builds a formatted list of tokens and descriptions

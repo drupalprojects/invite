@@ -1,4 +1,3 @@
-; $Id$
 name = Cancel User Accounts
 description = "Allows your users to terminate user accounts by withdrawing their invitation. WARNING - This module is put into effect when you enable it."
 dependencies = invite
