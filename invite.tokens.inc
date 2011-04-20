@@ -45,8 +45,9 @@ function invite_tokens($type, $tokens, array $data = array(), array $options = a
   return $replacements;
 }
 
+
 /**
- * Implements hook_token_list().
+ * Implements hook_token_info().
  */
 function invite_token_info() {
   $types['invite'] = array(
@@ -76,10 +77,12 @@ function invite_token_info() {
   );
   
   $tokens['invite-message-raw'] = array(
+    'name' => t('Invite message raw'),
     'description' => t('The personal message for the invitee as unfiltered text. WARNING - raw user input.'),
   );
   
   $tokens['join-link'] = array(
+    'name' => t('Join link'),
     'description' => t('The link to the registration page, including the invitation code.'),
   );
 
@@ -88,46 +91,3 @@ function invite_token_info() {
     'tokens' => array('invite' => $tokens),
   );
 }
-
-/**
- * For a given context, builds a formatted list of tokens and descriptions
- * of their replacement values.
- *
- * @param type
- *   The token types to display documentation for. Defaults to 'all'.
- * @param prefix
- *   The prefix your module will use when parsing tokens. Defaults to '['
- * @param suffix
- *   The suffix your module will use when parsing tokens. Defaults to ']'
- * @return
- *   An HTML table containing the formatting docs.
- */
-function theme_invite_token_help($variables) {
-  $type = !empty($variables['type']) ? $variables['type'] : 'all';
-  $prefix = !empty($variables['prefix']) ? $variables['prefix'] : '[';
-  $suffix = !empty($variables['suffix']) ? $variables['suffix'] : ']';
-
-  token_include();
-
-  // @see http://drupal.org/node/127072
-  $full_list = array();
-  foreach ((array) $type as $t) {
-    $full_list = array_merge($full_list, token_get_list($t));
-  }
-
-  $headers = array(t('Token'), t('Replacement value'));
-  $rows = array();
-  foreach ($full_list as $key => $category) {
-    $rows[] = array(array('data' => drupal_ucfirst($key) . ' ' . t('tokens'), 'class' => 'region', 'colspan' => 2));
-    foreach ($category as $token => $description) {
-      $row = array();
-      $row[] = $prefix . $token . $suffix;
-      $row[] = $description;
-      $rows[] = $row;
-    }
-  }
-
-  $output = theme('table', array('header' => $headers, 'rows' => $rows, 'attributes' => array('class' => 'description')));
-  return $output;
-}
-

@@ -69,10 +69,6 @@ function invite_theme() {
       'variables' => array('items' => NULL),
       'file' => 'invite.admin.inc',
     ),
-    'invite_token_help' => array(
-      'variables' => array('type' => NULL, 'prefix' => NULL, 'suffix' => NULL),
-      'file' => 'invite.tokens.inc',
-    ),
   );
 }
 
@@ -317,12 +313,12 @@ function invite_user_access($permission, $account) {
  *   The user id to check accepted invitations for.
  */
 function invite_notify($uid) {
-  $result = db_query('SELECT invitee FROM {invite_notifications} WHERE uid = %d', $uid);
-  while ($row = db_fetch_object($result)) {
+  $result = db_query('SELECT invitee FROM {invite_notifications} WHERE uid = :uid', array(':uid' => $uid))->fetchAll();
+  foreach($result as $row) {
     $account = user_load_multiple(array($row->invitee), array('status' => 1));
     if ($account) {
       drupal_set_message(t('!user (@email) has joined @site-name!', array('!user' => theme('username', array('account' => $account)), '@email' => $account->mail, '@site-name' => variable_get('site_name', t('Drupal')))));
-      db_query("DELETE FROM {invite_notifications} WHERE uid = %d AND invitee = %d", $uid, $row->invitee);
+      db_query("DELETE FROM {invite_notifications} WHERE uid = :uid AND invitee = :invitee", array(':uid' => $uid, ':invitee' => $row->invitee));
     }
   }
 }
@@ -416,8 +412,7 @@ function invite_form_alter(&$form, &$form_state, $form_id) {
  *   An invite record.
  */
 function invite_load($code) {
-  $result = db_query("SELECT * FROM {invite} WHERE reg_code = '%s' AND canceled = 0", $code);
-  if ($invite = db_fetch_object($result)) {
+  if ($invite = db_query("SELECT * FROM {invite} WHERE reg_code = :reg_code AND canceled = 0", array(':reg_code' => $code))->fetch()) {
     $invite->inviter = user_load($invite->uid);
     $invite->data = (array) unserialize($invite->data);
   }
@@ -474,7 +469,7 @@ function invite_user_insert(&$edit, &$account, $category) {
     // Try to look up an invitation in case a user has been invited to join
     // the site, but did go straight to the site and signed up without
     // using the invite link.
-    $code = db_result(db_query("SELECT reg_code FROM {invite} WHERE email = '%s'", $account->mail));
+    $code = db_query("SELECT reg_code FROM {invite} WHERE email = :reg_code", array(':reg_code' => $account->mail))->fetchField();
     if ($code) {
       $invite = invite_load($code);
     }
@@ -501,7 +496,9 @@ function invite_user_insert(&$edit, &$account, $category) {
       user_save($invite->inviter, array('invite_sent' => TRUE));
     }
 
-    unset($_SESSION[INVITE_SESSION]);
+    if (isset($_SESSION)) {
+      unset($_SESSION[INVITE_SESSION]);
+    }
   }
 }
 
@@ -524,17 +521,17 @@ function invite_user_cancel($edit, $account, $method) {
  */
 function invite_process_invite($invite, $account) {
   // Update the invitation record.
-  db_query("UPDATE {invite} SET email = '%s', invitee = %d, joined = %d WHERE reg_code = '%s'", $account->mail, $account->uid, REQUEST_TIME, $invite->reg_code);
+  db_query("UPDATE {invite} SET email = :email, invitee = :invitee, joined = :joined WHERE reg_code = :reg_code", array(':email' => $account->mail, ':invitee' => $account->uid, ':joined' => REQUEST_TIME, ':reg_code' => $invite->reg_code));
 
   // Delete all invites to these e-mail addresses, except this one.
-  db_query("DELETE FROM {invite} WHERE (email = '%s' OR email = '%s') AND reg_code <> '%s'", $invite->email, $account->mail, $invite->reg_code);
+  db_query("DELETE FROM {invite} WHERE (email = :invite_email OR email = :account_mail) AND reg_code <> :reg_code", array(':invite_email' => $invite->email, ':account_mail' => $account->mail, ':reg_code' => $invite->reg_code));
 
   // Add all users who invited this particular e-mail address to the
   // notification queue.
-  db_query("INSERT INTO {invite_notifications} (uid, invitee) SELECT uid, %d from {invite} WHERE (email = '%s' OR email = '%s') AND canceled = 0", $account->uid, $invite->email, $account->mail);
+  db_query("INSERT INTO {invite_notifications} (uid, invitee) SELECT uid, :uid FROM {invite} WHERE (email = :invite_email OR email = :account_mail) AND canceled = 0", array(':uid' => $account->uid, ':invite_email' => $invite->email, ':account_mail' => $account->mail));
 
   // Unblock the user account.
-  db_query("UPDATE {users} SET status = 1 WHERE uid = %d", $account->uid);
+  db_query("UPDATE {users} SET status = 1 WHERE uid = :uid", array(':uid' => $account->uid));
 
   // Determine target roles for invited user.
   $roles = invite_target_roles($invite);
@@ -584,16 +581,16 @@ function invite_target_roles($invite) {
  */
 function invite_delete($uid) {
   // Delete invite for this user if the originating user has the permission.
-  $origin = db_query("SELECT uid FROM {invite} WHERE invitee = %d", $uid)->fetchField();
+  $origin = db_query("SELECT uid FROM {invite} WHERE invitee = :uid", array(':uid' => $uid))->fetchField();
   if ($origin && $inviter = user_load($origin)) {
     if (user_access('withdraw accepted invitations', $inviter)) {
-      db_query("DELETE FROM {invite} WHERE invitee = %d", $uid);
+      db_query("DELETE FROM {invite} WHERE invitee = :uid", array(':uid' => $uid));
     }
   }
   // Delete any invites originating from this user.
-  db_query("DELETE FROM {invite} WHERE uid = %d", $uid);
+  db_query("DELETE FROM {invite} WHERE uid = :uid", array(':uid' => $uid));
   // Clean up the notification queue.
-  db_query("DELETE FROM {invite_notifications} WHERE uid = %d OR invitee = %d", $uid, $uid);
+  db_query("DELETE FROM {invite_notifications} WHERE uid = :uid OR invitee = :uid", array(':uid' => $uid));
 }
 
 /**
@@ -638,6 +635,8 @@ function invite_block_view($delta = '') {
  */
 function invite_form($form, &$form_state, $op = 'page', $edit = array()) {
   global $user;
+
+  $form['#op'] = $op;
 
   if (!is_array($edit)) {
     $edit = (array) $edit;
@@ -707,7 +706,7 @@ function invite_get_remaining_invites($account) {
     $remaining = invite_get_role_limit($account);
     if ($remaining > 0) {
       // Legacy support.
-      $sent = db_query("SELECT COUNT(*) FROM {invite} WHERE uid = %d", $account->uid)->fetchField();
+      $sent = db_query("SELECT COUNT(*) FROM {invite} WHERE uid = :uid", array(':uid' => $account->uid))->fetchField();
       $remaining = max($remaining - $sent, 0);
       if ($sent > 0) {
         // Update user property for faster lookup next time.
@@ -883,7 +882,7 @@ function invite_block_form($remaining_invites) {
   $form['#action'] = url('invite');
 
   $form['invite'] = array(
-    '#value' => t('Recommend @site-name to:', array('@site-name' => variable_get('site_name', t('Drupal')))),
+    '#markup' => t('Recommend @site-name to:', array('@site-name' => variable_get('site_name', t('Drupal')))),
   );
   $description = '';
   if ($remaining_invites != INVITE_UNLIMITED) {
@@ -920,7 +919,7 @@ function theme_invite_form($variables) {
 
   $output = '';
   // @TODO: This needs to be updated for D7
-  //$op = $form['#parameters'][2];
+  $op = $form['#op'];
 
   if ($op == 'page') {
     // Show form elements.
@@ -970,7 +969,7 @@ function invite_form_validate($form, &$form_state) {
       // Filter out already registered users, but pass validation.
       // @TODO needs update to D7
       //$failed_emails = _invite_validate_emails("SELECT mail AS email FROM {users} WHERE mail IN (:emails)", array(':emails' => $emails));
-      $failed_emails = db_query("SELECT mail AS email FROM {users} WHERE mail IN (:emails)", array(':emails' => $emails))->fetchAll();
+      $failed_emails = array_keys(db_query("SELECT mail AS email FROM {users} WHERE mail IN (:emails)", array(':emails' => $emails))->fetchAllAssoc('mail'));
       if (count($failed_emails)) {
         $error = format_plural(count($failed_emails), 'The following recipient is already a member:', 'The following recipients are already members:') . '<br />';
         foreach ($failed_emails as $key => $email) {
@@ -986,7 +985,7 @@ function invite_form_validate($form, &$form_state) {
       // Filter out already invited users, but pass validation.
       // @TODO: Needs update for D7
       //$failed_emails = _invite_validate_emails("SELECT email FROM {invite} WHERE email IN (:emails) AND uid = :uid AND canceled = 0", array(':emails' => $emails, 'uid' => $user->uid));
-      $failed_emails = db_query("SELECT email FROM {invite} WHERE email IN (:emails) AND uid = :uid AND canceled = 0", array(':emails' => $emails, 'uid' => $user->uid))->fetchAll();
+      $failed_emails = array_keys(db_query("SELECT email FROM {invite} WHERE email IN (:emails) AND uid = :uid AND canceled = 0", array(':emails' => $emails, ':uid' => $user->uid))->fetchAllAssoc('email'));
       if (count($failed_emails)) {
         $error = format_plural(count($failed_emails), 'You have already invited the following recipient:', 'You have already invited the following recipients:') . '<br />';
         $error .= implode(', ', array_map('check_plain', $failed_emails));
@@ -1180,7 +1179,7 @@ function invite_form_submit($form, &$form_state) {
  *   The e-mail subject.
  */
 function invite_get_subject($substitutions = array()) {
-  $subject = t(variable_get('invite_subject', t('[inviter-raw] has sent you an invite!')));
+  $subject = t(variable_get('invite_subject', t('[invite:inviter-raw] has sent you an invite!')));
   return token_replace($subject, _invite_token_types($substitutions));
 }
 
@@ -1294,7 +1293,7 @@ function invite_cancel(&$form_state, $invite) {
 function invite_cancel_submit($form, &$form_state) {
   $invite = $form_state['values']['invite'];
 
-  db_query("UPDATE {invite} SET canceled = 1 WHERE reg_code = '%s'", $invite->reg_code);
+  db_query("UPDATE {invite} SET canceled = 1 WHERE reg_code = :reg_code", array(':reg_code' => $invite->reg_code));
   drupal_set_message(t('Invitation to %email has been withdrawn.', array('%email' => $invite->email)));
 
   // Notify other modules.
@@ -1357,14 +1356,14 @@ function invite_disable() {
  *   The localized e-mail body.
  */
 function _invite_get_mail_template() {
-  $template = t("Your friend, [inviter-raw], has invited you to join [site-name] at [site-url].
+  $template = t("Your friend, [invite:inviter-raw], has invited you to join [site:name] at [site:url].
 
-To become a member of [site-name], click the link below or paste it into the address bar of your browser.
+To become a member of [site:name], click the link below or paste it into the address bar of your browser.
 
-[join-link]
+[invite:join-link]
 
 ----------
-[invite-message-raw]");
+[invite:invite-message-raw]");
 
   return variable_get('invite_default_mail_template', $template);
 }

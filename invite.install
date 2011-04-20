@@ -114,10 +114,10 @@ function invite_schema() {
  */
 function invite_uninstall() {
   // Delete variables
-  $sql = "DELETE from {variable} WHERE name LIKE '%s%%'";
-  db_query($sql, 'invite_target_role_');
-  db_query($sql, 'invite_maxnum_');
-  db_query($sql, 'invite_maxmultiple_');
+  $sql = "DELETE from {variable} WHERE name LIKE :varname";
+  db_query($sql, array(':varname' => 'invite_target_role_%'));
+  db_query($sql, array(':varname' => 'invite_maxnum_%'));
+  db_query($sql, array(':varname' => 'invite_maxmultiple_%'));
 
   variable_del('invite_target_role_default');
   variable_del('invite_expiry');

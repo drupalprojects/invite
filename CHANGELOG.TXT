@@ -1,6 +1,19 @@
 
 Invite 7.x-2.x, xxxx-xx-xx
 --------------------------
+#1124708 by hadsie: Fixed a bug on the pending invite listings page. Fixed a
+  bug preventing sending invites to multiple accounts.
+#1060808 by hadsie: db errors on invite admin settings page.
+#1060826 by hadsie: Fixes for broken db_query calls.
+#1060950 by hadsie: Invite 7.x token fixes.
+#1060976 by hadsie: Undefined function db_fetch_object.
+#1053460 by hadsie: Fatal error: Call to undefined function token_include().
+#1054398 by jacov: Warning: unserialize() expects parameter 1 to be string,
+  array given.
+#1060980 by hadsie: Drupal 7 port fixall patch.
+#1063032 by hadsie: Call to undefined function db_result().
+#1073010 by hadsie: undefined variable: SESSION.
+#1091002 by hadsie: Invite tokens declared incorrectly.
 #671818 by hadsie, smk-ka: Port to Drupal 7.
 by smk-ka: Cleaned up README.
 #496894 by seutje, smk-ka: Increased size of e-mail subject field.

@@ -120,7 +120,7 @@ function invite_settings() {
     '#collapsed' => TRUE,
   );
   $form['email']['token_help']['help'] = array(
-    '#value' => theme('invite_token_help', array('type' => array('user', 'profile', 'invite'))),
+    '#markup' => theme('token_tree', array('token_types' => array('user', 'profile', 'invite'))),
   );
   $form['email']['invite_use_users_email'] = array(
     '#type' => 'radios',
@@ -415,7 +415,7 @@ function invite_user_overview($page = 'accepted') {
     switch ($page) {
       case 'accepted':
       default:
-        $account_exists = !is_null($invite->account);
+        $account_exists = !is_null($invite->uid);
 
         if ($profile_access && $account_exists) {
           $row[] = l($invite->email, 'user/' . $invite->invitee, array('title' => t('View user profile.')));
