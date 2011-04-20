@@ -197,10 +197,12 @@ function invite_admin_overview() {
     ->extend('TableSort')
     ->extend('PagerDefault');
   $result->innerJoin('users', 'u1', 'u1.uid = i.uid');
+  $result->fields('u1', array('name'));
   $result->addExpression('COUNT(*)', 'invites');
 
   $filter = $filter_args = $query = NULL;
-  $output = drupal_get_form('invite_admin_filter_form');
+  $output = render(drupal_get_form('invite_admin_filter_form'));
+  
   if (isset($_SESSION[INVITE_ADMIN_SESSION])) {
     $result->innerJoin('users', 'u2', 'u2.uid = i.invite');
     $result->where("LOWER(u2.name) LIKE LOWER('%s%%')");
@@ -220,7 +222,7 @@ function invite_admin_overview() {
   $rows = array();
   foreach ($result as $row) {
     $cells = array();
-    $cells[] = theme('username', array('account' => $row));
+    $cells[] = theme('username', array('account' => $row, 'name' => $row->name));
     $cells[] = $row->invites;
     $cells[] = invite_count($row->uid, 'accepted');
     $cells[] = invite_count($row->uid, 'pending');

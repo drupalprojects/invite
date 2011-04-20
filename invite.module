@@ -138,13 +138,14 @@ function invite_menu() {
     'weight' => 10,
     'file' => 'invite.admin.inc',
   );
+
   $items['admin/config/people/invite/details/%user'] = array(
     'title callback' => 'invite_admin_details_page_title',
     'title arguments' => array(5),
     'page callback' => 'invite_admin_details',
     'page arguments' => array(5),
     'access arguments' => array('administer invitations'),
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_CALLBACK,
     'file' => 'invite.admin.inc',
   );
 
