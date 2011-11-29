@@ -1,6 +1,0 @@
-name = Invite Statistics
-description = "Displays some statistics about sent invitations."
-core = 7.x
-package = Invite
-dependencies[] = invite
-files[] = invite_stats.module
