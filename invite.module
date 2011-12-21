@@ -311,7 +311,7 @@ function invite_notify($uid) {
   while ($row = db_fetch_object($result)) {
     $account = user_load(array('uid' => $row->invitee, 'status' => 1));
     if ($account) {
-      drupal_set_message(check_plain(t('!user (@email) has joined @site-name!', array('!user' => theme('username', $account), '@email' => $account->mail, '@site-name' => variable_get('site_name', t('Drupal'))))));
+      drupal_set_message(t('!user (@email) has joined @site-name!', array('!user' => theme('username', $account), '@email' => $account->mail, '@site-name' => variable_get('site_name', t('Drupal')))));
       db_query("DELETE FROM {invite_notifications} WHERE uid = %d AND invitee = %d", $uid, $row->invitee);
     }
   }
