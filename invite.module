@@ -977,7 +977,7 @@ function invite_form_validate($form, &$form_state) {
     // Check that there is at least one valid e-mail remaining after filtering
     // out dupes.
     if (count($emails) == 0) {
-      form_set_error('email');
+      form_set_error('email', t('Please enter valid e-mail addresses.'));
       return;
     }
 
