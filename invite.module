@@ -1381,8 +1381,8 @@ function _invite_substitutions($args = array()) {
 
   $defaults = array(
     'inviter' => $user,
-    'email'   => '--recipient-email--',
-    'code'    => '--invite-code--',
+    'email'   => t('--recipient-email--'),
+    'code'    => t('--invite-code--'),
     'resent'  => 0,
     'data'    => array('subject' => NULL, 'message' => NULL),
   );
