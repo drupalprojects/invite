@@ -1151,6 +1151,28 @@ function invite_form_submit($form, &$form_state) {
 }
 
 /**
+ * Implements hook_link_alter().
+ */
+function invite_link_alter(&$links, $node, $comment = NULL) {
+  // If the site registration is set to invite-only, remove the "register" option
+  // from the "login or register to post" link.
+  if (isset($links['comment_forbidden'])) {
+    if (invite_user_registration_by_invite_only()) {
+      // Get the destination for the link.
+      if (variable_get('comment_form_location_'. $node->type, COMMENT_FORM_SEPARATE_PAGE) == COMMENT_FORM_SEPARATE_PAGE) {
+        $destination = 'destination='. rawurlencode("comment/reply/$node->nid#comment-form");
+      }
+      else {
+        $destination = 'destination='. rawurlencode("node/$node->nid#comment-form");
+      }
+      // Replace the link.
+      $link = t('<a href="@login">Login</a> to post comments', array('@login' => url('user/login', array('query' => $destination))));
+      $links['comment_forbidden']['title'] = $link;
+    }
+  }
+}
+
+/**
  * Return the invite e-mail subject.
  *
  * @param $substitutions
