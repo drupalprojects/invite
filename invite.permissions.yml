@@ -1,0 +1,31 @@
+add invite entities:
+  title: 'Create new Invite entities'
+administer invite entities:
+  title: 'Administer Invite entities'
+  description: 'Allow to access the administration form to configure Invite entities.'
+  restrict access: true
+delete invite entities:
+  title: 'Delete Invite entities'
+edit invite entities:
+  title: 'Edit Invite entities'
+view published invite entities:
+  title: 'View published Invite entities'
+view unpublished invite entities:
+  title: 'View unpublished Invite entities'
+add invite type entities:
+  title: 'Create new Invite type entities'
+administer invite type entities:
+  title: 'Administer Invite type entities'
+  description: 'Allow to access the administration form to configure Invite type entities.'
+  restrict access: true
+delete invite type entities:
+  title: 'Delete Invite type entities'
+edit invite type entities:
+  title: 'Edit Invite type entities'
+view published invite type entities:
+  title: 'View published Invite type entities'
+view unpublished invite type entities:
+  title: 'View unpublished Invite type entities'
+
+permission_callbacks:
+  - Drupal\invite\InvitePermissions::permissions
