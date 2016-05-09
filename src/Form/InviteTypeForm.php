@@ -71,6 +71,7 @@ class InviteTypeForm extends ContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
+    drupal_flush_all_caches(); //@todo flush block cache only.
     $form_state->setRedirect('entity.invite_type.collection', ['invite_type' => $entity->id()]);
   }
 

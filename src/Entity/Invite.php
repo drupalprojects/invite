@@ -2,6 +2,7 @@
 
 namespace Drupal\invite\Entity;
 
+use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
@@ -60,8 +61,22 @@ class Invite extends ContentEntityBase implements InviteInterface {
    */
   public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
     parent::preCreate($storage_controller, $values);
+    // Generate unique registration code.
+    do {
+      $reg_code = user_password(10);
+      $result = Database::getConnection()->query('SELECT reg_code FROM {invite} WHERE reg_code = :reg_code', array(':reg_code' => $reg_code))->fetchField();
+
+    } while ($result !== FALSE);
+
     $values += array(
       'user_id' => \Drupal::currentUser()->id(),
+      'created' => REQUEST_TIME,
+      'expires' => REQUEST_TIME + 30 * 24 * 60 * 60, // @todo move 30 to config
+      'invitee' => 0,
+      'type' => $values['type'],
+      'status' => 1,
+      'reg_code' => $reg_code,
+      'data' => array(),
     );
   }
 

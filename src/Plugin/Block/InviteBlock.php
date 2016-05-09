@@ -3,6 +3,7 @@
 namespace Drupal\invite\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
+use Drupal\invite\Form\InviteBlockForm;
 
 /**
  * Provides a 'InviteBlock' block.
@@ -21,7 +22,8 @@ class InviteBlock extends BlockBase {
   public function build() {
     $block_id = $this->getDerivativeId();
     $build = [];
-    $build['invite_block']['#markup'] = 'Implement InviteBlock. id: ' . $block_id;
+    $form = \Drupal::formBuilder()->getForm(new InviteBlockForm, $block_id);
+    $build['form'] = $form;
 
     return $build;
   }
