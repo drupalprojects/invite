@@ -1,8 +1,12 @@
 invite.invite_accept_accept:
-  path: '/invite/accept/{reg_code}'
+  path: '/invite/accept/{invite}'
   defaults:
     _controller: '\Drupal\invite\Controller\InviteAccept::accept'
     _title: 'accept'
   requirements:
     _permission: 'access content'
     reg_code: ^[a-zA-Z0-9]+
+  options:
+    parameters:
+      invite:
+        type: reg_code

@@ -1,0 +1,5 @@
+services:
+  reg_code:
+    class: Drupal\invite\ParamConverter\InviteParamConverter
+    tags:
+      - { name: paramconverter }
