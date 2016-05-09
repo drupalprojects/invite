@@ -26,6 +26,5 @@ view published invite type entities:
   title: 'View published Invite type entities'
 view unpublished invite type entities:
   title: 'View unpublished Invite type entities'
-
 permission_callbacks:
   - Drupal\invite\InvitePermissions::permissions

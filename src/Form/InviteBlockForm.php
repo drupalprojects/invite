@@ -4,6 +4,7 @@ namespace Drupal\invite\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\invite\Entity\Invite;
 
 /**
@@ -24,19 +25,35 @@ class InviteBlockForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['email'] = array(
-      '#type' => 'email',
-      '#title' => $this->t('Email'),
+
+    $form['create_invite'] = array(
+      '#type' => 'button',
+      '#value' => $this->t('Create invite'),
+      '#limit_validation_errors' => array(array('create_invite')),
+      '#executes_submit_callback' => TRUE,
+      '#ajax' => array(
+        'callback' => '::ajaxReplaceInviteContainer',
+        'wrapper' => 'invite',
+        'method' => 'replace',
+      ),
     );
 
-    $form['submit'] = array(
-      '#type' => 'submit',
-      '#value' => t('Send'),
-      '#name' => 'send',
-      '#limit_validation_errors' => array(),
+    $form['invite_containter'] = array(
+      '#type' => 'container',
+      '#prefix' => '<div id="invite">',
+      '#suffix' => '</div>',
     );
 
     return $form;
+  }
+
+  public function ajaxReplaceInviteContainer($form, FormStateInterface $form_state) {
+    $invite_type = $form_state->getBuildInfo()['args'][0];
+    $invite = Invite::create(array('type' => $invite_type));
+    $invite->save();
+    $url = Url::fromRoute('invite.invite_accept_accept');
+    $form['invite_container']['#markup'] = '<a href="/invite/accept/' . $invite->getRegCode() . '">Invite Link</a>';
+    return $form['invite_container'];
   }
 
   /**
@@ -47,5 +64,4 @@ class InviteBlockForm extends FormBase {
     $invite = Invite::create(array('type' => $invite_type));
     $invite->save();
   }
-
 }

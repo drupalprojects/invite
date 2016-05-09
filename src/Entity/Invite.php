@@ -120,9 +120,23 @@ class Invite extends ContentEntityBase implements InviteInterface {
   /**
    * {@inheritdoc}
    */
+  public function getInvitee() {
+    return $this->get('invitee')->entity;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setOwner(UserInterface $account) {
     $this->set('user_id', $account->id());
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRegCode() {
+    return $this->get('reg_code')->value;
   }
 
   /**
@@ -240,10 +254,6 @@ class Invite extends ContentEntityBase implements InviteInterface {
     $fields['joined'] = BaseFieldDefinition::create('timestamp')
       ->setLabel(t('Joined'))
       ->setDescription(t('Will be filled with the time the invite was accepted upon registration.'));
-
-    $fields['canceled'] = BaseFieldDefinition::create('timestamp')
-      ->setLabel(t('Canceled'))
-      ->setDescription(t('The Unix timestamp when the invite has been withdrawn.'));
 
     $fields['data'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Data'))
