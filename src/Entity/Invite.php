@@ -83,6 +83,20 @@ class Invite extends ContentEntityBase implements InviteInterface {
   /**
    * {@inheritdoc}
    */
+  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    parent::postSave($storage, $update);
+    // Call all registered plugin send methods.
+    $invite_sending_methods = Database::getConnection()->query('SELECT name FROM invite_sender WHERE type=:type', array(':type' => $this->get('type')->value))->fetchAll(\PDO::FETCH_COLUMN);
+    $plugin_manager = \Drupal::service('plugin.manager.invite');
+    foreach ($invite_sending_methods as $invite_sending_method) {
+      $plugin = $plugin_manager->createInstance($invite_sending_method);
+      $plugin->send($this);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getCreatedTime() {
     return $this->get('created')->value;
   }
