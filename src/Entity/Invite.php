@@ -57,6 +57,11 @@ class Invite extends ContentEntityBase implements InviteInterface {
   use EntityChangedTrait;
 
   /**
+   * The plugin creating this invite.
+   */
+  protected $plugin;
+
+  /**
    * {@inheritdoc}
    */
   public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
@@ -64,7 +69,9 @@ class Invite extends ContentEntityBase implements InviteInterface {
     // Generate unique registration code.
     do {
       $reg_code = user_password(10);
-      $result = Database::getConnection()->query('SELECT reg_code FROM {invite} WHERE reg_code = :reg_code', array(':reg_code' => $reg_code))->fetchField();
+      $result = Database::getConnection()
+        ->query('SELECT reg_code FROM {invite} WHERE reg_code = :reg_code', array(':reg_code' => $reg_code))
+        ->fetchField();
 
     } while ($result !== FALSE);
 
@@ -85,13 +92,25 @@ class Invite extends ContentEntityBase implements InviteInterface {
    */
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     parent::postSave($storage, $update);
-    // Call all registered plugin send methods.
-    $invite_sending_methods = Database::getConnection()->query('SELECT name FROM invite_sender WHERE type=:type', array(':type' => $this->get('type')->value))->fetchAll(\PDO::FETCH_COLUMN);
-    $plugin_manager = \Drupal::service('plugin.manager.invite');
-    foreach ($invite_sending_methods as $invite_sending_method) {
-      $plugin = $plugin_manager->createInstance($invite_sending_method);
+    if (!empty($this->plugin)) {
+      $plugin_manager = \Drupal::service('plugin.manager.invite');
+      $plugin = $plugin_manager->createInstance($this->plugin);
       $plugin->send($this);
     }
+  }
+
+  /**
+   * Sets the plugin id.
+   */
+  public function setPlugin($plugin) {
+    $this->plugin = $plugin;
+  }
+
+  /**
+   * Gets the plugin id.
+   */
+  public function getPlugin() {
+    return $this->plugin;
   }
 
   /**

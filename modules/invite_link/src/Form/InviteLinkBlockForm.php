@@ -62,6 +62,7 @@ class InviteLinkBlockForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $invite_type = $form_state->getBuildInfo()['args'][0];
     $invite = Invite::create(array('type' => $invite_type));
+    $invite->setPlugin('invite_link');
     $invite->save();
   }
 }

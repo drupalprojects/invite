@@ -66,6 +66,7 @@ class InviteByEmailBlockForm extends FormBase {
     if (!empty($subject)) {
       $invite->field_invite_email_subject->value = $subject;
     }
+    $invite->setPlugin('invite_by_email');
     $invite->save();
   }
 }
