@@ -98,6 +98,21 @@ class InviteType extends ContentEntityBase implements InviteTypeInterface {
   /**
    * {@inheritdoc}
    */
+  public function getData() {
+    return $this->get('data')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setData($data) {
+    $this->set('data', $data);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getCreatedTime() {
     return $this->get('created')->value;
   }
