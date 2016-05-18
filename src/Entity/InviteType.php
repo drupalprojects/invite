@@ -2,6 +2,7 @@
 
 namespace Drupal\invite\Entity;
 
+use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
@@ -64,6 +65,23 @@ class InviteType extends ContentEntityBase implements InviteTypeInterface {
       'user_id' => \Drupal::currentUser()->id(),
     );
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function preDelete(EntityStorageInterface $storage, array $entities) {
+    parent::postDelete($storage, $entities);
+    $entity = reset($entities);
+
+    // Remove invite_sender records.
+    $invite_senders = Database::getConnection()->query('SELECT id FROM invite_sender WHERE type=:type', array(':type' => $entity->getType()))->fetchAll(\PDO::FETCH_COLUMN);
+    $invite_senders = InviteSender::loadMultiple($invite_senders);
+    foreach ($invite_senders as $invite_sender) {
+      $invite_sender->delete();
+    }
+    drupal_flush_all_caches(); // todo flush block caches specifically.
+  }
+
 
   /**
    * {@inheritdoc}

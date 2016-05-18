@@ -36,7 +36,7 @@ class InviteAccept extends ControllerBase {
   public function accept($invite) {
     $account = $this->currentUser();
     $redirect = '<front>';
-    $message = '';
+    $message = 'Hmm.';
     $type = 'status';
 
     // Current user is the inviter.
@@ -48,6 +48,7 @@ class InviteAccept extends ControllerBase {
     else {
       $_SESSION['invite_code'] = $invite->getRegCode();
       $redirect = 'user.register';
+      $message = $this->t('Please create an account to accept the invitation.');
     }
 
     $invite_accept = new InviteAcceptEvent(array(

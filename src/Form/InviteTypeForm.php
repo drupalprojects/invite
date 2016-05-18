@@ -94,7 +94,7 @@ class InviteTypeForm extends ContentEntityForm {
       '#default_value' => $entity->getDescription(),
     );
 
-    // If there are sending methods.
+    // List the available sending methods.
     $plugin_definitions = $this->pluginManager->getDefinitions();
     if (!empty($plugin_definitions)) {
       $options = array();
