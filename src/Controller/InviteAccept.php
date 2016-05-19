@@ -28,10 +28,7 @@ class InviteAccept extends ControllerBase {
   }
 
   /**
-   * Accept.
-   *
-   * @return string
-   *   Return Hello string.
+   * Accepts an invitation.
    */
   public function accept($invite) {
     $account = $this->currentUser();
@@ -43,7 +40,6 @@ class InviteAccept extends ControllerBase {
     if ($account->id() == $invite->getOwnerId()) {
       $message = $this->t('You can not use your own invite...');
       $type = 'error';
-      $redirect = '<front>';
     }
     else {
       $_SESSION['invite_code'] = $invite->getRegCode();
@@ -51,15 +47,17 @@ class InviteAccept extends ControllerBase {
       $message = $this->t('Please create an account to accept the invitation.');
     }
 
+    // Let other modules act on the invite accepting.
     $invite_accept = new InviteAcceptEvent(array(
       'redirect' => &$redirect,
       'message' => &$message,
       'type' => &$type,
       'invite' => $invite,
     ));
-
     $this->dispatcher->dispatch('invite_accept', $invite_accept);
     drupal_set_message($message, $type);
+
+    // todo track acceptance.
 
     return $this->redirect($redirect);
   }
