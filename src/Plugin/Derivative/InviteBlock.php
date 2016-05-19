@@ -21,7 +21,7 @@ class InviteBlock implements DeriverInterface {
   }
 
   /**
-   * Creates an invite block for each sending method enabled for each invite_type.
+   * Creates a block for each sending method that is enabled on invite_types.
    */
   public function getDerivativeDefinitions($base_plugin_definition) {
     $derivatives = array();

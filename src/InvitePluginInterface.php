@@ -6,8 +6,13 @@
 namespace Drupal\invite;
 
 /**
- * Developers can register an invite processing plugin that implements
- * InvitePluginInterface and annotates:
+ * For creating invite sending method plugins.
+ *
+ * Plugin should set the plugin machine name on the invite it creates in order for
+ * the send method to be called. e.g.
+ *
+ * $invite->setPlugin('invite_link');
+ * @see \Drupal\invite_link\Form\InviteLinkBlockForm->submitForm for an example.
  *
  * @Plugin(
  *   id="Name of Invite plugin"

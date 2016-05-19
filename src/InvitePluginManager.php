@@ -19,5 +19,4 @@ class InvitePluginManager extends DefaultPluginManager {
     $this->setCacheBackend($cache_backend, 'invite_plugin_info');
   }
 
-
 }

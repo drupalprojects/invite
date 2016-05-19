@@ -79,6 +79,7 @@ class InviteType extends ContentEntityBase implements InviteTypeInterface {
     foreach ($invite_senders as $invite_sender) {
       $invite_sender->delete();
     }
+    // Reload blocks.
     drupal_flush_all_caches(); // todo flush block caches specifically.
   }
 

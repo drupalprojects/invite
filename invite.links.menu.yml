@@ -9,9 +9,8 @@ invite_type.add.invite_type:
   route_name: entity.invite_type.add_form
   parent: entity.invite_type.collection
 invite.invite_config:
-  title: 'Invite Settings'
+  title: 'Invite settings'
   route_name: invite.invite_config
   description: 'Configure invite.'
   parent: entity.invite_type.collection
   weight: 99
-

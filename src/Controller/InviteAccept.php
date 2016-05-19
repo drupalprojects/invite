@@ -53,7 +53,7 @@ class InviteAccept extends ControllerBase {
       $message = $this->t('Please create an account to accept the invitation.');
     }
 
-    // Let other modules act on the invite accepting.
+    // Let other modules act on the invite accepting before the user is created.
     $invite_accept = new InviteAcceptEvent(array(
       'redirect' => &$redirect,
       'message' => &$message,

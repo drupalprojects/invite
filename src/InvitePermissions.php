@@ -8,7 +8,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Provides dynamic permissions of the filter module.
+ * Provides dynamic permissions of the invite module.
  */
 class InvitePermissions implements ContainerInjectionInterface {
 
@@ -22,7 +22,7 @@ class InvitePermissions implements ContainerInjectionInterface {
   protected $entityManager;
 
   /**
-   * Constructs a new FilterPermissions instance.
+   * Constructs a new InvitePermissions instance.
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.

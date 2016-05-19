@@ -10,7 +10,6 @@ invite.invite_accept_accept:
     parameters:
       invite:
         type: reg_code
-
 invite.invite_config:
   path: '/admin/config/invite/invite_config'
   defaults:

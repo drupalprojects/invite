@@ -48,7 +48,7 @@ class InviteLinkBlockForm extends FormBase {
   }
 
   public function ajaxReplaceInviteContainer($form, FormStateInterface $form_state) {
-    $form['invite_container']['#markup'] = '  <a href="/invite/accept/' . $form_state->getTemporaryValue('invite')->getRegCode() . '">Invite Link</a>';
+    $form['invite_container']['#markup'] = '<div id="invite">  <a href="/invite/accept/' . $form_state->getTemporaryValue('invite')->getRegCode() . '">Invite Link</a></div>';
     return $form['invite_container'];
   }
 

@@ -15,4 +15,3 @@ entity.invite_type.delete_form:
   base_route:  entity.invite_type.canonical
   title: Delete
   weight: 10
-
