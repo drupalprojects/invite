@@ -48,11 +48,7 @@ class InviteLinkBlockForm extends FormBase {
   }
 
   public function ajaxReplaceInviteContainer($form, FormStateInterface $form_state) {
-    $invite_type = $form_state->getBuildInfo()['args'][0];
-    $invite = Invite::create(array('type' => $invite_type));
-    $invite->save();
-    $url = Url::fromRoute('invite.invite_accept_accept');
-    $form['invite_container']['#markup'] = '<a href="/invite/accept/' . $invite->getRegCode() . '">Invite Link</a>';
+    $form['invite_container']['#markup'] = '  <a href="/invite/accept/' . $form_state->getTemporaryValue('invite')->getRegCode() . '">Invite Link</a>';
     return $form['invite_container'];
   }
 
@@ -61,8 +57,12 @@ class InviteLinkBlockForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $invite_type = $form_state->getBuildInfo()['args'][0];
+
     $invite = Invite::create(array('type' => $invite_type));
     $invite->setPlugin('invite_link');
     $invite->save();
+
+    $form_state->setTemporaryValue('invite', $invite);
+
   }
 }

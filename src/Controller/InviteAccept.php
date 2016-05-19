@@ -38,9 +38,15 @@ class InviteAccept extends ControllerBase {
 
     // Current user is the inviter.
     if ($account->id() == $invite->getOwnerId()) {
-      $message = $this->t('You can not use your own invite...');
+      $message = $this->t('You can\'t use your own invite...');
       $type = 'error';
     }
+    // Invite has already been used.
+    else if($invite->getStatus() == INVITE_USED) {
+      $message = $this->t('Sorry this invitation has already been used.');
+      $type = 'error';
+    }
+    // Good to go!
     else {
       $_SESSION['invite_code'] = $invite->getRegCode();
       $redirect = 'user.register';
@@ -52,12 +58,11 @@ class InviteAccept extends ControllerBase {
       'redirect' => &$redirect,
       'message' => &$message,
       'type' => &$type,
-      'invite' => $invite,
+      'invite' => &$invite,
     ));
+
     $this->dispatcher->dispatch('invite_accept', $invite_accept);
     drupal_set_message($message, $type);
-
-    // todo track acceptance.
 
     return $this->redirect($redirect);
   }

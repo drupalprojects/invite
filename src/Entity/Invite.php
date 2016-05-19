@@ -2,6 +2,7 @@
 
 namespace Drupal\invite\Entity;
 
+use Drupal\Core\Config\Config;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -78,7 +79,7 @@ class Invite extends ContentEntityBase implements InviteInterface {
     $values += array(
       'user_id' => \Drupal::currentUser()->id(),
       'created' => REQUEST_TIME,
-      'expires' => REQUEST_TIME + 30 * 24 * 60 * 60, // @todo move 30 to config
+      'expires' => REQUEST_TIME + \Drupal::config('invite.invite_config')->get('invite_expiration') * 24 * 60 * 60,
       'invitee' => 0,
       'type' => $values['type'],
       'status' => 1,
@@ -155,6 +156,37 @@ class Invite extends ContentEntityBase implements InviteInterface {
    */
   public function getInvitee() {
     return $this->get('invitee')->entity;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setJoined($time) {
+    $this->set('joined', $time);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getStatus() {
+    return $this->get('status')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setStatus($status) {
+    $this->set('status', $status);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setInvitee(UserInterface $account) {
+    $this->set('user_id', $account->id());
+    return $this;
   }
 
   /**
