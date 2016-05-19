@@ -185,7 +185,7 @@ class Invite extends ContentEntityBase implements InviteInterface {
    * {@inheritdoc}
    */
   public function setInvitee(UserInterface $account) {
-    $this->set('user_id', $account->id());
+    $this->set('invitee', $account->id());
     return $this;
   }
 
