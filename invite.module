@@ -37,7 +37,9 @@ function invite_user_insert(Drupal\Core\Entity\EntityInterface $account) {
       ->execute();
     $invite_type = InviteType::load(reset($id));
     $data = unserialize($invite_type->getData());
-    $account->addRole($data['target_role']);
-    $account->save();
+    if ($data['target_role'] != '0') {
+      $account->addRole($data['target_role']);
+      $account->save();
+    }
   }
 }
