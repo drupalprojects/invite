@@ -64,6 +64,7 @@ class InviteTypeForm extends ContentEntityForm {
     $form = parent::buildForm($form, $form_state);
     $entity = $this->entity;
     $is_new = $entity->isNew();
+    $data = unserialize($entity->getData());
 
     $form['label'] = array(
       '#title' => t('Invite Type Label'),
@@ -92,6 +93,21 @@ class InviteTypeForm extends ContentEntityForm {
       '#description' => t('Description about the invite type.'),
       '#rows' => 5,
       '#default_value' => $entity->getDescription(),
+    );
+
+    $options[] = '- ' . $this->t('None') . ' -';
+    foreach (user_roles() as $user_role) {
+      if (empty($user_role->get('_core'))) {
+        $options[$user_role->id()] = $user_role->label();
+      }
+    }
+    $form['target_role'] = array(
+      '#type' => 'select',
+      '#required' => FALSE,
+      '#title' => t('Role'),
+      '#description' => t('Please select a role to apply to the invitee (Optional).'),
+      '#options' => $options,
+      '#default_value' => $data['target_role'],
     );
 
     // List the available sending methods.
@@ -142,6 +158,19 @@ class InviteTypeForm extends ContentEntityForm {
       }
     }
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    // Assemble data.
+    $data_value = $form_state->getValue('data');
+    $data = !empty($data_value) ? $data_value : array();
+    $data['target_role'] = $form_state->getValue('target_role');
+    $form_state->setValue('data', serialize($data));
+    parent::submitForm($form, $form_state);
+  }
+
 
   /**
    * {@inheritdoc}

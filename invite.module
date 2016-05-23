@@ -14,13 +14,14 @@ define('INVITE_EXPIRED', 4);
 
 use Drupal\Core\Entity\Entity;
 use Drupal\invite\Entity\Invite;
+use Drupal\invite\Entity\InviteType;
 
 /**
  * Implements hook_ENTITY_TYPE_insert().
  */
 function invite_user_insert(Drupal\Core\Entity\EntityInterface $account) {
-  // Update invite when user accepts.
   if (!empty($_SESSION['invite_code'])) {
+    // Update invite when user accepts.
     $id = Drupal::entityQuery('invite')
       ->condition('reg_code', $_SESSION['invite_code'])
       ->execute();
@@ -30,5 +31,13 @@ function invite_user_insert(Drupal\Core\Entity\EntityInterface $account) {
     $invite->setStatus(INVITE_USED);
     $invite->save();
     unset($_SESSION['invite_code']);
+    // Add target role to user.
+    $id = Drupal::entityQuery('invite_type')
+      ->condition('type', $invite->get('type')->value)
+      ->execute();
+    $invite_type = InviteType::load(reset($id));
+    $data = unserialize($invite_type->getData());
+    $account->addRole($data['target_role']);
+    $account->save();
   }
 }

@@ -38,7 +38,6 @@ function invite_by_email_form_alter(&$form, \Drupal\Core\Form\FormStateInterface
     $form['invite_by_email']['use_default'] = array(
       '#type' => 'checkbox',
       '#title' => t('Use default settings'),
-//    '#description' => t('Use !default_link mail template and settings', array('!default_link' => Link::fromTextAndUrl(t('default'), 'admin/config/people/invite/by_mail'))),
       '#default_value' => $invite_by_email_settings['use_default'],
       '#states' => array(
         'invisible' => array(
@@ -83,5 +82,5 @@ function invite_by_email_form_alter(&$form, \Drupal\Core\Form\FormStateInterface
  * @param $form_state
  */
 function invite_by_email_form_invite_type_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-  $form_state->setValue('data', serialize($form_state->getValue('invite_by_email')));
+  $form_state->setValue('data', $form_state->getValue('invite_by_email'));
 }
