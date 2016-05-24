@@ -28,7 +28,7 @@ class InviteBlock implements DeriverInterface {
     $connection = Database::getConnection();
     foreach ($connection->query('SELECT * FROM invite_sender WHERE name=:provider', array(':provider' => $base_plugin_definition['provider']))->fetchAll() as $sending_method) {
       $derivatives[$sending_method->type] = $base_plugin_definition;
-      $derivatives[$sending_method->type]['admin_label'] = $connection->query('SELECT label FROM invite_type WHERE type=:type', array(':type' => $sending_method->type))->fetchField();
+      $derivatives[$sending_method->type]['admin_label'] = \Drupal::config('invite.invite_type.' . $sending_method->type)->get('label');
     }
 
     return $derivatives;

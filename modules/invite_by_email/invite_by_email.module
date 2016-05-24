@@ -61,7 +61,7 @@ function invite_by_email_form_alter(&$form, \Drupal\Core\Form\FormStateInterface
     $form['invite_by_email']['help'] = array(
       '#type' => 'container',
       'help' => array(
-        '#markup' => t('You may update the default values for Subject and Body for this content type on the <a href="@fields_path">fields edit page</a>.', array('@fields_path' => '/admin/structure/invite/settings/fields')),
+        '#markup' => t('You may update the default subject and body for all invites on the <a href="@fields_path">fields edit page</a>.', array('@fields_path' => '/admin/structure/invite/settings/fields')),
       ),
       '#states' => array(
         'invisible' => array(

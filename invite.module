@@ -32,11 +32,7 @@ function invite_user_insert(Drupal\Core\Entity\EntityInterface $account) {
     $invite->save();
     unset($_SESSION['invite_code']);
     // Add target role to user.
-    $id = Drupal::entityQuery('invite_type')
-      ->condition('type', $invite->get('type')->value)
-      ->execute();
-    $invite_type = InviteType::load(reset($id));
-    $data = unserialize($invite_type->getData());
+    $data = unserialize(\Drupal::config('invite.invite_type.' . $invite->get('type')->value)->get('data'));
     if ($data['target_role'] != '0') {
       $account->addRole($data['target_role']);
       $account->save();

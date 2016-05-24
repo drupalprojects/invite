@@ -3,7 +3,7 @@
 namespace Drupal\invite\Form;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Entity\ContentEntityForm;
+use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\invite\Entity\InviteSender;
@@ -13,9 +13,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Form controller for Invite type edit forms.
  *
- * @ingroup invite
+ * @package Drupal\invite\Form
  */
-class InviteTypeForm extends ContentEntityForm {
+class InviteTypeForm extends EntityForm {
 
   /**
    * @var \Drupal\invite\InvitePluginManager
@@ -37,7 +37,6 @@ class InviteTypeForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function __construct(EntityManagerInterface $entity_manager, InvitePluginManager $plugin_manager, Connection $database) {
-    parent::__construct($entity_manager);
     $this->pluginManager = $plugin_manager;
     $this->database = $database;
   }
@@ -59,11 +58,19 @@ class InviteTypeForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function form(array $form, FormStateInterface $form_state) {
     /* @var $entity \Drupal\invite\Entity\InviteType */
-    $form = parent::buildForm($form, $form_state);
+    $form = parent::form($form, $form_state);
     $entity = $this->entity;
     $is_new = $entity->isNew();
+    if ($is_new) {
+      $entity
+        ->set('label', '')
+        ->set('type', '')
+        ->set('description', '')
+        ->set('data', '');
+
+    }
     $data = unserialize($entity->getData());
 
     $form['label'] = array(
@@ -75,7 +82,7 @@ class InviteTypeForm extends ContentEntityForm {
       '#size' => 30,
     );
 
-    $form['type'] = array(
+    $form['id'] = array(
       '#type' => 'machine_name',
       '#default_value' => $entity->getType(),
       '#maxlength' => 255,
@@ -185,7 +192,7 @@ class InviteTypeForm extends ContentEntityForm {
       throw $e;
     }
 
-    $status = parent::save($form, $form_state);
+    $status = $entity->save();
 
     switch ($status) {
       case SAVED_NEW:

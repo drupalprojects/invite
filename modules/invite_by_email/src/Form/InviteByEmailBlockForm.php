@@ -2,11 +2,13 @@
 
 namespace Drupal\invite_by_email\Form;
 
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\invite\Entity\Invite;
 use Drupal\invite\Entity\InviteType;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class InviteByEmailBlockForm.
@@ -26,8 +28,8 @@ class InviteByEmailBlockForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $invite_type = InviteType::load(Database::getConnection()->query('SELECT id FROM {invite_type} WHERE type = :type', array(':type' => $form_state->getBuildInfo()['args'][0]))->fetchField());
-    $data = unserialize($invite_type->getData());
+    $invite_type = $this->config('invite.invite_type.test');
+    $data = unserialize($invite_type->get('data'));
 
     $form['email'] = array(
       '#type' => 'email',
