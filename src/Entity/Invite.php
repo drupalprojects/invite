@@ -81,7 +81,7 @@ class Invite extends ContentEntityBase implements InviteInterface {
       'created' => REQUEST_TIME,
       'expires' => REQUEST_TIME + \Drupal::config('invite.invite_config')->get('invite_expiration') * 24 * 60 * 60,
       'invitee' => 0,
-      'type' => $values['type'],
+      'type' => !empty($values['type']) ? $values['type'] : '',
       'status' => 1,
       'reg_code' => $reg_code,
       'data' => array(),

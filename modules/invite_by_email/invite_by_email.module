@@ -15,6 +15,7 @@ function invite_by_email_form_alter(&$form, \Drupal\Core\Form\FormStateInterface
     $invite_by_email_settings = !empty($data) ? $data : array(
       'use_default' => TRUE,
       'subject_editable' => '',
+      'html_email' => '',
       'mail_subject' => '',
       'mail_template' => '',
     );
@@ -58,6 +59,18 @@ function invite_by_email_form_alter(&$form, \Drupal\Core\Form\FormStateInterface
       ),
     );
 
+    $form['invite_by_email']['html_email'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('HTML email'),
+      '#description' => t('Send HTML emails. WARNING: This option has security implications! Give to trusted users only.'),
+      '#default_value' => $invite_by_email_settings['html_email'],
+      '#states' => array(
+        'invisible' => array(
+          ':input[name="invite_by_email[use_default]"]' => array('checked' => TRUE),
+        ),
+      ),
+    );
+
     $form['invite_by_email']['help'] = array(
       '#type' => 'container',
       'help' => array(
@@ -83,4 +96,15 @@ function invite_by_email_form_alter(&$form, \Drupal\Core\Form\FormStateInterface
  */
 function invite_by_email_form_invite_type_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
   $form_state->setValue('data', $form_state->getValue('invite_by_email'));
+}
+
+/**
+ * Implements hook_theme().
+ */
+function invite_by_email_theme($existing, $type, $theme, $path) {
+  return array(
+    'invite_by_email' => array(
+      'variables' => array('body' => NULL),
+    ),
+  );
 }

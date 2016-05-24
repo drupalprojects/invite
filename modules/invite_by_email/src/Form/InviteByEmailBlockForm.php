@@ -28,7 +28,7 @@ class InviteByEmailBlockForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $invite_type = $this->config('invite.invite_type.test');
+    $invite_type = $this->config('invite.invite_type.' . $form_state->getBuildInfo()['args'][0]);
     $data = unserialize($invite_type->get('data'));
 
     $form['email'] = array(
