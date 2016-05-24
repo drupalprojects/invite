@@ -40,10 +40,38 @@ use Drupal\invite\InviteTypeInterface;
  * )
  */
 class InviteType extends ConfigEntityBase implements InviteTypeInterface {
+  /**
+   * Invite type machine name.
+   *
+   * @var string
+   */
   protected $id;
+
+  /**
+   * Invite type human readable name.
+   * @var string
+   */
   protected $label;
+
+  /**
+   * Invite type description.
+   *
+   * @var string
+   */
   protected $description;
+
+  /**
+   * Invite type serialized data.
+   *
+   * @var string
+   */
   protected $data;
+
+  /**
+   * Invite type status.
+   *
+   * @var integer
+   */
   protected $status;
 
   /**
@@ -111,13 +139,7 @@ class InviteType extends ConfigEntityBase implements InviteTypeInterface {
    */
   public function delete() {
     // Remove invite_sender records.
-    $invite_senders = Database::getConnection()
-      ->query('SELECT id FROM invite_sender WHERE type=:type', array(':type' => $this->get('id')))
-      ->fetchAll(\PDO::FETCH_COLUMN);
-    $invite_senders = InviteSender::loadMultiple($invite_senders);
-    foreach ($invite_senders as $invite_sender) {
-      $invite_sender->delete();
-    }
+    InviteSender::load($this->get('id'))->delete();
     // Reload blocks.
     drupal_flush_all_caches(); // todo flush block caches specifically.
     parent::delete();

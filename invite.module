@@ -14,7 +14,6 @@ define('INVITE_EXPIRED', 4);
 
 use Drupal\Core\Entity\Entity;
 use Drupal\invite\Entity\Invite;
-use Drupal\invite\Entity\InviteType;
 
 /**
  * Implements hook_ENTITY_TYPE_insert().

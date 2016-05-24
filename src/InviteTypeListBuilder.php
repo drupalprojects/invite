@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityInterface;
  * Provides a list of Invite type entities.
  */
 class InviteTypeListBuilder extends ConfigEntityListBuilder {
+
   /**
    * {@inheritdoc}
    */

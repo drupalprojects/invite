@@ -13,6 +13,7 @@ use Drupal\Core\Access\AccessResult;
  * @see \Drupal\invite\Entity\InviteType.
  */
 class InviteTypeAccessControlHandler extends EntityAccessControlHandler {
+
   /**
    * {@inheritdoc}
    */

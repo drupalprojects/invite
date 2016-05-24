@@ -8,6 +8,7 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  * Provides an interface for defining Invite type entities.
  */
 interface InviteTypeInterface extends ConfigEntityInterface {
+
   /**
    * Gets the Invite type label.
    *

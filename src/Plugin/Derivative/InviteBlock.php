@@ -6,7 +6,7 @@
 namespace Drupal\invite\Plugin\Derivative;
 
 use Drupal\Component\Plugin\Derivative\DeriverInterface;
-use Drupal\Core\Database\Database;
+use Drupal\invite\Entity\InviteSender;
 
 class InviteBlock implements DeriverInterface {
 
@@ -25,10 +25,13 @@ class InviteBlock implements DeriverInterface {
    */
   public function getDerivativeDefinitions($base_plugin_definition) {
     $derivatives = array();
-    $connection = Database::getConnection();
-    foreach ($connection->query('SELECT * FROM invite_sender WHERE name=:provider', array(':provider' => $base_plugin_definition['provider']))->fetchAll() as $sending_method) {
-      $derivatives[$sending_method->type] = $base_plugin_definition;
-      $derivatives[$sending_method->type]['admin_label'] = \Drupal::config('invite.invite_type.' . $sending_method->type)->get('label');
+    foreach (InviteSender::loadMultiple(\Drupal::entityQuery('invite_sender')
+      ->condition('sending_methods', $base_plugin_definition['provider'], 'CONTAINS')
+      ->execute()) as $sending_method) {
+      $sending_method_id = $sending_method->id();
+      $derivatives[$sending_method_id] = $base_plugin_definition;
+      $derivatives[$sending_method_id]['admin_label'] = \Drupal::config('invite.invite_type.' . $sending_method_id)
+        ->get('label');
     }
 
     return $derivatives;

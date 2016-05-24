@@ -46,10 +46,10 @@ class InviteTypeForm extends EntityForm {
    */
   public function getDefaultSendMethods($invite_type) {
     $defaults = array();
-    $invite_senders = $this->database->query('SELECT name FROM invite_sender WHERE type=:type', array(':type' => $invite_type->getType()))
-      ->fetchAllAssoc('name');
-    foreach ($invite_senders as $invite_sender) {
-      $defaults[$invite_sender->name] = $invite_sender->name;
+    foreach (explode('||', \Drupal::config('invite.invite_sender.' . $invite_type->getType())->get('sending_methods')) as $sending_method) {
+      if ($sending_method != '0') {
+        $defaults[$sending_method] = $sending_method;
+      }
     }
 
     return $defaults;
@@ -153,17 +153,22 @@ class InviteTypeForm extends EntityForm {
    */
   public function updateInviteSender($send_methods, $invite_type) {
     $type = $invite_type->getType();
-    $this->database->delete('invite_sender')->condition('type', $type)->execute();
-    foreach ($send_methods as $send_method) {
-      if (!empty($send_method)) {
-        InviteSender::create(array(
-            'type' => $type,
-            'module' => '', // <-- todo
-            'name' => $send_method,
-          )
-        )->save();
-      }
+    $send_methods = implode('||', $send_methods);
+    $invite_sender = InviteSender::load($type);
+    if (empty($invite_sender)) {
+      $invite_sender = InviteSender::create(
+        array(
+          'id' => $type,
+          'sending_methods' => $send_methods,
+        )
+      );
     }
+    else {
+      $invite_sender
+        ->set('id', $type)
+        ->set('sending_methods', $send_methods);
+    }
+    $invite_sender->save();
   }
 
   /**
