@@ -2,6 +2,7 @@
 
 namespace Drupal\invite\Form;
 
+use Drupal\Core\Block\BlockManager;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityManagerInterface;
@@ -29,6 +30,7 @@ class InviteTypeForm extends EntityForm {
     return new static(
       $container->get('entity.manager'),
       $container->get('plugin.manager.invite'),
+      $container->get('plugin.manager.block'),
       $container->get('database')
     );
   }
@@ -36,9 +38,10 @@ class InviteTypeForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public function __construct(EntityManagerInterface $entity_manager, InvitePluginManager $plugin_manager, Connection $database) {
+  public function __construct(EntityManagerInterface $entity_manager, InvitePluginManager $plugin_manager, BlockManager $block_plugin_manager, Connection $database) {
     $this->pluginManager = $plugin_manager;
     $this->database = $database;
+    $this->block_manager = $block_plugin_manager;
   }
 
   /**
@@ -212,7 +215,7 @@ class InviteTypeForm extends EntityForm {
         ]));
     }
     // Reload blocks.
-    drupal_flush_all_caches(); //@todo flush block cache only.
+    $this->block_manager->clearCachedDefinitions();
 
     $form_state->setRedirect('entity.invite_type.collection', ['invite_type' => $entity->id()]);
   }

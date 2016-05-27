@@ -141,7 +141,7 @@ class InviteType extends ConfigEntityBase implements InviteTypeInterface {
     // Remove invite_sender records.
     InviteSender::load($this->get('id'))->delete();
     // Reload blocks.
-    drupal_flush_all_caches(); // todo flush block caches specifically.
+    \Drupal::service('plugin.manager.block')->clearCachedDefinitions();
     parent::delete();
   }
 
