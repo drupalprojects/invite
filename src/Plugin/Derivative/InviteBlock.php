@@ -1,13 +1,13 @@
 <?php
-/**
- * @file
- * Contains \Drupal\invite\Plugin\Derivative\InviteBlock.
- */
+
 namespace Drupal\invite\Plugin\Derivative;
 
 use Drupal\Component\Plugin\Derivative\DeriverInterface;
 use Drupal\invite\Entity\InviteSender;
 
+/**
+ * InviteBlock Class.
+ */
 class InviteBlock implements DeriverInterface {
 
   /**
