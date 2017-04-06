@@ -20,7 +20,6 @@ class InviteLinkBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    $config = $this->getConfiguration();
     $block_id = $this->getDerivativeId();
     $build = [];
     $form = \Drupal::formBuilder()->getForm(new InviteLinkBlockForm(), $block_id);
