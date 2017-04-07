@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\invite\InvitePluginManager.
- */
 
 namespace Drupal\invite;
 

@@ -1,8 +1,5 @@
 <?php
-/**
- * @file
- * Contains Drupal\invite\ParamConverter\InviteParamConverter.
- */
+
 namespace Drupal\invite\ParamConverter;
 
 use Drupal\Core\ParamConverter\ParamConverterInterface;

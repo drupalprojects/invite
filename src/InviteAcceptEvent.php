@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains Drupal\invite\InviteAcceptEvent.
- */
 
 namespace Drupal\invite;
 
