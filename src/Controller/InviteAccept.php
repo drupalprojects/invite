@@ -4,7 +4,6 @@ namespace Drupal\invite\Controller;
 
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Entity\Entity;
 use Drupal\invite\InviteAcceptEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -17,12 +16,18 @@ class InviteAccept extends ControllerBase {
 
   public $dispatcher;
 
+  /**
+   * Functin for create.
+   */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('event_dispatcher')
     );
   }
 
+  /**
+   * Construct.
+   */
   public function __construct(ContainerAwareEventDispatcher $dispatcher) {
     $this->dispatcher = $dispatcher;
   }
@@ -38,11 +43,11 @@ class InviteAccept extends ControllerBase {
 
     // Current user is the inviter.
     if ($account->id() == $invite->getOwnerId()) {
-      $message = $this->t('You can\'t use your own invite...');
+      $message = $this->t("You can\'t use your own invite...");
       $type = 'error';
     }
     // Invite has already been used.
-    else if($invite->getStatus() == INVITE_USED) {
+    else if ($invite->getStatus() == INVITE_USED) {
       $message = $this->t('Sorry this invitation has already been used.');
       $type = 'error';
     }
