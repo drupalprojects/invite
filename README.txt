@@ -59,7 +59,7 @@ Current maintainers:
  * István Kurucz (nevergone) - https://www.drupal.org/user/58654
  * Khalid Baheyeldin (kbahey) - https://www.drupal.org/user/4063
  * Pavel Makhrinsky (gumanist) - https://www.drupal.org/user/773216
- * Renato Gonçalves (renatog) - https://www.drupal.org/user/3326031
+ * Renato Gonçalves (RenatoG) - https://www.drupal.org/user/3326031
  * Robert Douglass (robertDouglass) - https://www.drupal.org/user/5449
  * Tim Bozeman - https://www.drupal.org/user/2241356
  * Wolfgang Ziegler (fago) - https://www.drupal.org/user/16747
