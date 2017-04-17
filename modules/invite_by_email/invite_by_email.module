@@ -1,13 +1,16 @@
 <?php
+
 /**
  * @file
  * Contains invite_by_email.module.
  */
 
+use Drupal\Core\Form\FormStateInterface;
+
 /**
  * Implements hook_form_alter().
  */
-function invite_by_email_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+function invite_by_email_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if ($form_id == 'invite_type_add_form' || $form_id == 'invite_type_edit_form') {
     $invite_type = $form_state->getFormObject()->getEntity();
     $data = unserialize($invite_type->getData());
@@ -32,7 +35,7 @@ function invite_by_email_form_alter(&$form, \Drupal\Core\Form\FormStateInterface
       '#states' => array(
         'invisible' => array(
           ':input[name="send_method[invite_by_email]"]' => array('checked' => FALSE),
-        )
+        ),
       ),
     );
 
@@ -83,7 +86,8 @@ function invite_by_email_form_alter(&$form, \Drupal\Core\Form\FormStateInterface
       ),
     );
 
-    // Put our submit in top of list to ensure, that values will be added to 'data'
+    // Put our submit in top of list to ensure, that values will be added to
+    // 'data'.
     array_unshift($form['actions']['submit']['#submit'], 'invite_by_email_form_invite_type_form_submit');
   }
 }
@@ -91,10 +95,12 @@ function invite_by_email_form_alter(&$form, \Drupal\Core\Form\FormStateInterface
 /**
  * Submit handler for invite types form.
  *
- * @param $form
- * @param $form_state
+ * @param array $form
+ *   The form array.
+ * @param FormStateInterface $form_state
+ *   The formstate.
  */
-function invite_by_email_form_invite_type_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+function invite_by_email_form_invite_type_form_submit(&$form, FormStateInterface $form_state) {
   $form_state->setValue('data', $form_state->getValue('invite_by_email'));
 }
 

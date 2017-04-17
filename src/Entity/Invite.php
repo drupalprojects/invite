@@ -59,6 +59,8 @@ class Invite extends ContentEntityBase implements InviteInterface {
 
   /**
    * The plugin creating this invite.
+   *
+   * @var plugin
    */
   protected $plugin;
 

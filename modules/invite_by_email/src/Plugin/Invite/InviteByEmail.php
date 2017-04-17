@@ -1,13 +1,13 @@
 <?php
 
-
 namespace Drupal\invite_by_email\Plugin\Invite;
-
 
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\invite\InvitePluginInterface;
 
 /**
+ * Class for Invite by Email.
+ *
  * @Plugin(
  *   id="invite_by_email",
  *   label = @Translation("Invite By Email")
@@ -47,7 +47,7 @@ class InviteByEmail implements InvitePluginInterface {
     // Send.
     $system = $mail->getInstance(array(
       'module' => 'invite_by_email',
-      'key' => $mail_key
+      'key' => $mail_key,
     ));
     $system->mail($message);
   }

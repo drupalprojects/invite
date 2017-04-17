@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * Contains invite.module
+ * Contains invite.module.
  */
 
 /**
@@ -12,13 +13,13 @@ define('INVITE_WITHDRAWN', 2);
 define('INVITE_USED', 3);
 define('INVITE_EXPIRED', 4);
 
-use Drupal\Core\Entity\Entity;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\invite\Entity\Invite;
 
 /**
  * Implements hook_ENTITY_TYPE_insert().
  */
-function invite_user_insert(Drupal\Core\Entity\EntityInterface $account) {
+function invite_user_insert(EntityInterface $account) {
   if (!empty($_SESSION['invite_code'])) {
     // Update invite when user accepts.
     $id = Drupal::entityQuery('invite')

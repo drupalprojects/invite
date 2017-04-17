@@ -8,6 +8,7 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  * Provides an interface for defining Invite sender entities.
  */
 interface InviteSenderInterface extends ConfigEntityInterface {
+
   /**
    * Gets the Invite Sender label.
    *

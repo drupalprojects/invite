@@ -33,7 +33,8 @@ INSTALLATION
 
   * Enable the invite and invite_by_email modules. 
   * Navigate Structure » Invite types » Add Invite type and add an invite type.
-  * Navigate Structure » Block layout and place the invite type block that you named.
+  * Navigate Structure » Block layout and place the invite type block that you
+    named.
   * Enter an email address in the block and click Send Invitation.
 
 

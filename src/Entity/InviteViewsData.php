@@ -9,6 +9,7 @@ use Drupal\views\EntityViewsDataInterface;
  * Provides Views data for Invite entities.
  */
 class InviteViewsData extends EntityViewsData implements EntityViewsDataInterface {
+
   /**
    * {@inheritdoc}
    */

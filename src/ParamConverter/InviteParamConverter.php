@@ -11,6 +11,9 @@ use Symfony\Component\Routing\Route;
  */
 class InviteParamConverter implements ParamConverterInterface {
 
+  /**
+   * Applies function.
+   */
   public function applies($definition, $name, Route $route) {
     return (!empty($definition['type']) && $definition['type'] == 'reg_code');
   }
@@ -24,4 +27,5 @@ class InviteParamConverter implements ParamConverterInterface {
       ->execute();
     return Invite::load(reset($invite));
   }
+
 }

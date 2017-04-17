@@ -2,13 +2,9 @@
 
 namespace Drupal\invite_by_email\Form;
 
-use Drupal\Core\Config\ConfigFactory;
-use Drupal\Core\Database\Database;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\invite\Entity\Invite;
-use Drupal\invite\Entity\InviteType;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class InviteByEmailBlockForm.
@@ -56,7 +52,6 @@ class InviteByEmailBlockForm extends FormBase {
     return $form;
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -71,4 +66,5 @@ class InviteByEmailBlockForm extends FormBase {
     $invite->setPlugin('invite_by_email');
     $invite->save();
   }
+
 }

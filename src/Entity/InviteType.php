@@ -3,7 +3,6 @@
 namespace Drupal\invite\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use Drupal\Core\Database\Database;
 use Drupal\invite\InviteTypeInterface;
 
 /**
@@ -49,6 +48,7 @@ class InviteType extends ConfigEntityBase implements InviteTypeInterface {
 
   /**
    * Invite type human readable name.
+   *
    * @var string
    */
   protected $label;
@@ -70,7 +70,7 @@ class InviteType extends ConfigEntityBase implements InviteTypeInterface {
   /**
    * Invite type status.
    *
-   * @var integer
+   * @var int
    */
   protected $status;
 

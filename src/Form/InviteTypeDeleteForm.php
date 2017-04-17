@@ -10,6 +10,7 @@ use Drupal\Core\Url;
  * Provides a form for deleting Invite type entities.
  */
 class InviteTypeDeleteForm extends EntityConfirmFormBase {
+
   /**
    * {@inheritdoc}
    */

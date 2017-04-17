@@ -42,6 +42,7 @@ class InvitePermissions implements ContainerInjectionInterface {
    * Returns an array of invite permissions.
    *
    * @return array
+   *   Returns the array with permissions.
    */
   public function permissions() {
     $permissions = [];

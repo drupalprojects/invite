@@ -1,11 +1,12 @@
 <?php
+
 /**
  * @file
  * Invite tokens.
  */
 
 use Drupal\Core\Render\BubbleableMetadata;
-Use \Drupal\Core\Link;
+use \Drupal\Core\Link;
 
 /**
  * Implements hook_token_info().
@@ -44,9 +45,11 @@ function invite_by_email_tokens($type, $tokens, array $data, array $options, Bub
         case 'inviter:name':
           $replacements[$original] = $data['invite']->getOwner()->getAccountName();
           break;
+
         case 'invite-accept-link':
           $replacements[$original] = Link::createFromRoute('accept invite', 'invite.invite_accept_accept', array('invite' => $data['invite']->getRegCode()), array('absolute' => TRUE))->getUrl()->toString();
           break;
+
         default:
       }
     }

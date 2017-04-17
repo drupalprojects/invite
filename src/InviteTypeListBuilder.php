@@ -27,4 +27,5 @@ class InviteTypeListBuilder extends ConfigEntityListBuilder {
     $row['id'] = $entity->id();
     return $row + parent::buildRow($entity);
   }
+
 }

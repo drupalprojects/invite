@@ -19,6 +19,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class InviteTypeForm extends EntityForm {
 
   /**
+   * Plugin Manager.
+   *
    * @var \Drupal\invite\InvitePluginManager
    */
   public $pluginManager;
@@ -186,7 +188,6 @@ class InviteTypeForm extends EntityForm {
     parent::submitForm($form, $form_state);
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -219,6 +220,5 @@ class InviteTypeForm extends EntityForm {
 
     $form_state->setRedirect('entity.invite_type.collection', ['invite_type' => $entity->id()]);
   }
-
 
 }

@@ -4,7 +4,6 @@ namespace Drupal\invite_by_email\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\invite_by_email\Form\InviteByEmailBlockForm;
-use Drupal\invite_link\Form\InviteLinkBlockForm;
 
 /**
  * Provides an 'InviteByEmailBlock' block.

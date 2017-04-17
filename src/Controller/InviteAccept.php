@@ -47,7 +47,7 @@ class InviteAccept extends ControllerBase {
       $type = 'error';
     }
     // Invite has already been used.
-    else if ($invite->getStatus() == INVITE_USED) {
+    elseif ($invite->getStatus() == INVITE_USED) {
       $message = $this->t('Sorry this invitation has already been used.');
       $type = 'error';
     }

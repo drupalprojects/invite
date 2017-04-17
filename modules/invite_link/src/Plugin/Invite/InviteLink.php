@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Drupal\invite_link\Plugin\Invite;
-
 
 use Drupal\invite\InvitePluginInterface;
 
@@ -15,7 +13,12 @@ use Drupal\invite\InvitePluginInterface;
  * )
  */
 class InviteLink implements InvitePluginInterface {
+
+  /**
+   * {@inheritdoc}
+   */
   public function send($invite) {
     // Intentionally empty. This plugin only generates a link.
   }
+
 }
