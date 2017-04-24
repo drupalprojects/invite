@@ -4,6 +4,9 @@ namespace Drupal\invite\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
+use Drupal\Core\Entity\EntityInterface;
 
 /**
  * Class InviteConfig.
@@ -59,6 +62,16 @@ class InviteConfig extends ConfigFormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
+
+    $route_name = $form_state->getValue('accept_redirect');
+
+    $route_provider = \Drupal::service('router.route_provider');
+
+    $route_exists = count($route_provider->getRoutesByNames([$route_name])) === 1;
+
+    if (!$route_exists) {
+      $form_state->setErrorByName('accept_redirect', t('Route "@route" does not exist.', ['@route' => $route_name]));
+    }
   }
 
   /**
@@ -68,9 +81,9 @@ class InviteConfig extends ConfigFormBase {
     parent::submitForm($form, $form_state);
 
     $this->config('invite.invite_config')
-      ->set('invite_expiration', $form_state->getValue('invite_expiration'))
-      ->set('accept_redirect', $form_state->getValue('accept_redirect'))
-      ->save();
+        ->set('invite_expiration', $form_state->getValue('invite_expiration'))
+        ->set('accept_redirect', $form_state->getValue('accept_redirect'))
+        ->save();
   }
 
 }
