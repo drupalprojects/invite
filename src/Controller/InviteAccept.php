@@ -43,7 +43,7 @@ class InviteAccept extends ControllerBase {
 
     // Current user is the inviter.
     if ($account->id() == $invite->getOwnerId()) {
-      $message = $this->t("You can\'t use your own invite...");
+      $message = $this->t("You can't use your own invite.");
       $type = 'error';
     }
     // Invite has already been used.
@@ -59,12 +59,12 @@ class InviteAccept extends ControllerBase {
     }
 
     // Let other modules act on the invite accepting before the user is created.
-    $invite_accept = new InviteAcceptEvent(array(
+    $invite_accept = new InviteAcceptEvent([
       'redirect' => &$redirect,
       'message' => &$message,
       'type' => &$type,
       'invite' => &$invite,
-    ));
+    ]);
 
     $this->dispatcher->dispatch('invite_accept', $invite_accept);
     drupal_set_message($message, $type);
