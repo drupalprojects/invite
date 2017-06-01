@@ -62,7 +62,6 @@ class InviteByEmail implements InvitePluginInterface {
       drupal_set_message($this->t('Failed to send a message.'), 'error');
     }
 
-    $system->mail($message);
   }
 
 }
