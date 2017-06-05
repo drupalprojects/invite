@@ -25,23 +25,23 @@ class InviteLinkBlockForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    $form['create_invite'] = array(
+    $form['create_invite'] = [
       '#type' => 'button',
       '#value' => $this->t('Create invite'),
-      '#limit_validation_errors' => array(array('create_invite')),
+      '#limit_validation_errors' => [['create_invite']],
       '#executes_submit_callback' => TRUE,
-      '#ajax' => array(
+      '#ajax' => [
         'callback' => '::ajaxReplaceInviteContainer',
         'wrapper' => 'invite',
         'method' => 'replace',
-      ),
-    );
+      ],
+    ];
 
-    $form['invite_containter'] = array(
+    $form['invite_containter'] = [
       '#type' => 'container',
       '#prefix' => '<div id="invite">',
       '#suffix' => '</div>',
-    );
+    ];
 
     return $form;
   }
@@ -60,7 +60,7 @@ class InviteLinkBlockForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $invite_type = $form_state->getBuildInfo()['args'][0];
 
-    $invite = Invite::create(array('type' => $invite_type));
+    $invite = Invite::create(['type' => $invite_type]);
     $invite->setPlugin('invite_link');
     $invite->save();
 

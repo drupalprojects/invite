@@ -73,12 +73,12 @@ class Invite extends ContentEntityBase implements InviteInterface {
     do {
       $reg_code = user_password(10);
       $result = Database::getConnection()
-        ->query('SELECT reg_code FROM {invite} WHERE reg_code = :reg_code', array(':reg_code' => $reg_code))
+        ->query('SELECT reg_code FROM {invite} WHERE reg_code = :reg_code', [':reg_code' => $reg_code])
         ->fetchField();
 
     } while ($result !== FALSE);
 
-    $values += array(
+    $values += [
       'user_id' => \Drupal::currentUser()->id(),
       'created' => REQUEST_TIME,
       'expires' => REQUEST_TIME + \Drupal::config('invite.invite_config')->get('invite_expiration') * 24 * 60 * 60,
@@ -86,8 +86,8 @@ class Invite extends ContentEntityBase implements InviteInterface {
       'type' => !empty($values['type']) ? $values['type'] : '',
       'status' => 1,
       'reg_code' => $reg_code,
-      'data' => array(),
-    );
+      'data' => [],
+    ];
   }
 
   /**
@@ -223,39 +223,39 @@ class Invite extends ContentEntityBase implements InviteInterface {
     $fields['reg_code'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Registration Code'))
       ->setDescription(t('The invite registration code.'))
-      ->setSettings(array(
+      ->setSettings([
         'max_length' => 10,
         'text_processing' => 0,
-      ))
+      ])
       ->setDefaultValue('')
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'above',
         'type' => 'string',
         'weight' => -4,
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'string_textfield',
         'weight' => -4,
-      ))
+      ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
     $fields['type'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Invite Type'))
       ->setDescription(t('The invite type.'))
-      ->setSettings(array(
+      ->setSettings([
         'max_length' => 255,
         'text_processing' => 0,
-      ))
-      ->setDisplayOptions('view', array(
+      ])
+      ->setDisplayOptions('view', [
         'label' => 'above',
         'type' => 'string',
         'weight' => -4,
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'string_textfield',
         'weight' => -4,
-      ))
+      ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
@@ -267,21 +267,21 @@ class Invite extends ContentEntityBase implements InviteInterface {
       ->setSetting('handler', 'default')
       ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId')
       ->setTranslatable(TRUE)
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'author',
         'weight' => 0,
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
         'weight' => 5,
-        'settings' => array(
+        'settings' => [
           'match_operator' => 'CONTAINS',
           'size' => '60',
           'autocomplete_type' => 'tags',
           'placeholder' => '',
-        ),
-      ))
+        ],
+      ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
@@ -292,21 +292,21 @@ class Invite extends ContentEntityBase implements InviteInterface {
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
       ->setTranslatable(TRUE)
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'author',
         'weight' => 0,
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
         'weight' => 5,
-        'settings' => array(
+        'settings' => [
           'match_operator' => 'CONTAINS',
           'size' => '60',
           'autocomplete_type' => 'tags',
           'placeholder' => '',
-        ),
-      ))
+        ],
+      ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
@@ -329,10 +329,10 @@ class Invite extends ContentEntityBase implements InviteInterface {
     $fields['status'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Expiration'))
       ->setDescription(t('Invitation status'))
-      ->setSettings(array(
+      ->setSettings([
         'max_length' => 11,
         'text_processing' => 0,
-      ));
+      ]);
 
     return $fields;
   }

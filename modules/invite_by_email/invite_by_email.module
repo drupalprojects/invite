@@ -15,76 +15,76 @@ function invite_by_email_form_alter(&$form, FormStateInterface $form_state, $for
     $invite_type = $form_state->getFormObject()->getEntity();
     $data = unserialize($invite_type->getData());
 
-    $invite_by_email_settings = !empty($data) ? $data : array(
+    $invite_by_email_settings = !empty($data) ? $data : [
       'use_default' => TRUE,
       'subject_editable' => '',
       'html_email' => '',
       'mail_subject' => '',
       'mail_template' => '',
-    );
+    ];
 
-    $form['invite_by_email'] = array(
+    $form['invite_by_email'] = [
       '#type' => 'fieldset',
       '#title' => t('Invite by e-mail message settings'),
       '#tree' => TRUE,
-      '#attributes' => array(
-        'class' => array(
+      '#attributes' => [
+        'class' => [
           'invite-by-email-wrapper',
-        ),
-      ),
-      '#states' => array(
-        'invisible' => array(
-          ':input[name="send_method[invite_by_email]"]' => array('checked' => FALSE),
-        ),
-      ),
-    );
+        ],
+      ],
+      '#states' => [
+        'invisible' => [
+          ':input[name="send_method[invite_by_email]"]' => ['checked' => FALSE],
+        ],
+      ],
+    ];
 
-    $form['invite_by_email']['use_default'] = array(
+    $form['invite_by_email']['use_default'] = [
       '#type' => 'checkbox',
       '#title' => t('Use default settings'),
       '#default_value' => $invite_by_email_settings['use_default'],
-      '#states' => array(
-        'invisible' => array(
-          ':input[name="invite_by_email"]' => array('!value' => 'invite_by_email'),
-        ),
-      ),
-    );
+      '#states' => [
+        'invisible' => [
+          ':input[name="invite_by_email"]' => ['!value' => 'invite_by_email'],
+        ],
+      ],
+    ];
 
-    $form['invite_by_email']['subject_editable'] = array(
+    $form['invite_by_email']['subject_editable'] = [
       '#type' => 'checkbox',
       '#title' => t('Editable subject'),
       '#description' => t('Choose whether users should be able to customize the subject.'),
       '#default_value' => $invite_by_email_settings['subject_editable'],
-      '#states' => array(
-        'invisible' => array(
-          ':input[name="invite_by_email[use_default]"]' => array('checked' => TRUE),
-        ),
-      ),
-    );
+      '#states' => [
+        'invisible' => [
+          ':input[name="invite_by_email[use_default]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
 
-    $form['invite_by_email']['html_email'] = array(
+    $form['invite_by_email']['html_email'] = [
       '#type' => 'checkbox',
       '#title' => t('HTML email'),
       '#description' => t('Send HTML emails. WARNING: This option has security implications! Give to trusted users only.'),
       '#default_value' => $invite_by_email_settings['html_email'],
-      '#states' => array(
-        'invisible' => array(
-          ':input[name="invite_by_email[use_default]"]' => array('checked' => TRUE),
-        ),
-      ),
-    );
+      '#states' => [
+        'invisible' => [
+          ':input[name="invite_by_email[use_default]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
 
-    $form['invite_by_email']['help'] = array(
+    $form['invite_by_email']['help'] = [
       '#type' => 'container',
-      'help' => array(
-        '#markup' => t('You may update the default subject and body for all invites on the <a href="@fields_path">fields edit page</a>.', array('@fields_path' => '/admin/structure/invite/settings/fields')),
-      ),
-      '#states' => array(
-        'invisible' => array(
-          ':input[name="invite_by_email[use_default]"]' => array('checked' => TRUE),
-        ),
-      ),
-    );
+      'help' => [
+        '#markup' => t('You may update the default subject and body for all invites on the <a href="@fields_path">fields edit page</a>.', ['@fields_path' => '/admin/structure/invite/settings/fields']),
+      ],
+      '#states' => [
+        'invisible' => [
+          ':input[name="invite_by_email[use_default]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
 
     // Put our submit in top of list to ensure, that values will be added to
     // 'data'.
@@ -108,9 +108,9 @@ function invite_by_email_form_invite_type_form_submit(&$form, FormStateInterface
  * Implements hook_theme().
  */
 function invite_by_email_theme($existing, $type, $theme, $path) {
-  return array(
-    'invite_by_email' => array(
-      'variables' => array('body' => NULL),
-    ),
-  );
+  return [
+    'invite_by_email' => [
+      'variables' => ['body' => NULL],
+    ],
+  ];
 }

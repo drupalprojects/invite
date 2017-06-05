@@ -50,14 +50,14 @@ class InvitePermissions implements ContainerInjectionInterface {
     $invite_types = $this->entityManager->getStorage('invite_type')
       ->loadMultiple();
     foreach ($invite_types as $invite_type) {
-      $permissions['invite_type_' . $invite_type->getType()] = array(
-        'title' => $this->t('Create @label invites', array('@label' => $invite_type->label())),
-        'description' => array(
+      $permissions['invite_type_' . $invite_type->getType()] = [
+        'title' => $this->t('Create @label invites', ['@label' => $invite_type->label()]),
+        'description' => [
           '#prefix' => '<em>',
           '#markup' => $this->t('Warning: This permission could have security implications.'),
           '#suffix' => '</em>',
-        ),
-      );
+        ],
+      ];
     }
     return $permissions;
   }

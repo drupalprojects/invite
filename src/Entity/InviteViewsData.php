@@ -16,11 +16,11 @@ class InviteViewsData extends EntityViewsData implements EntityViewsDataInterfac
   public function getViewsData() {
     $data = parent::getViewsData();
 
-    $data['invite']['table']['base'] = array(
+    $data['invite']['table']['base'] = [
       'field' => 'id',
       'title' => $this->t('Invite'),
       'help' => $this->t('The Invite ID.'),
-    );
+    ];
 
     return $data;
   }
