@@ -56,10 +56,20 @@ class InviteByEmail implements InvitePluginInterface {
     $result = $system->mail($message);
 
     if ($result) {
+
       drupal_set_message($this->t('Invitation has been sent.'));
+
+      $mail_user = $message['to'];
+
+      \Drupal::logger('invite')->notice('Invitation has been sent for: @mail_user.', array(
+        '@mail_user' => $mail_user,
+      ));
     }
     else {
+
       drupal_set_message($this->t('Failed to send a message.'), 'error');
+
+      \Drupal::logger('invite')->error('Failed to send a message.');
     }
 
   }

@@ -5,7 +5,6 @@ namespace Drupal\invite_by_email\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\invite\Entity\Invite;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Class InviteByEmailBlockForm.
@@ -13,8 +12,6 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  * @package Drupal\invite\Form
  */
 class InviteByEmailBlockForm extends FormBase {
-
-  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
