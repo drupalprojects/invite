@@ -6,7 +6,7 @@
  */
 
 use Drupal\Core\Render\BubbleableMetadata;
-use \Drupal\Core\Link;
+use Drupal\Core\Link;
 
 /**
  * Implements hook_token_info().

@@ -97,10 +97,10 @@ function invite_by_email_form_alter(&$form, FormStateInterface $form_state, $for
  *
  * @param array $form
  *   The form array.
- * @param FormStateInterface $form_state
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The formstate.
  */
-function invite_by_email_form_invite_type_form_submit(&$form, FormStateInterface $form_state) {
+function invite_by_email_form_invite_type_form_submit(array &$form, FormStateInterface $form_state) {
   $form_state->setValue('data', $form_state->getValue('invite_by_email'));
 }
 

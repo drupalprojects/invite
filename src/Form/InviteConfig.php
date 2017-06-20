@@ -4,9 +4,6 @@ namespace Drupal\invite\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Url;
-use Drupal\Core\Entity\EntityInterface;
 
 /**
  * Class InviteConfig.
@@ -81,9 +78,9 @@ class InviteConfig extends ConfigFormBase {
     parent::submitForm($form, $form_state);
 
     $this->config('invite.invite_config')
-        ->set('invite_expiration', $form_state->getValue('invite_expiration'))
-        ->set('accept_redirect', $form_state->getValue('accept_redirect'))
-        ->save();
+      ->set('invite_expiration', $form_state->getValue('invite_expiration'))
+      ->set('accept_redirect', $form_state->getValue('accept_redirect'))
+      ->save();
   }
 
 }

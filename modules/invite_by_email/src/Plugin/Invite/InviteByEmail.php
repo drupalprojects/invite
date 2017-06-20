@@ -61,9 +61,9 @@ class InviteByEmail implements InvitePluginInterface {
 
       $mail_user = $message['to'];
 
-      \Drupal::logger('invite')->notice('Invitation has been sent for: @mail_user.', array(
+      \Drupal::logger('invite')->notice('Invitation has been sent for: @mail_user.', [
         '@mail_user' => $mail_user,
-      ));
+      ]);
     }
     else {
 

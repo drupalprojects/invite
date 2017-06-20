@@ -19,5 +19,3 @@ invite.invite_type.*:
     status:
       type: integer
       label: 'Status'
-
-
