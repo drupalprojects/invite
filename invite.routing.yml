@@ -19,3 +19,11 @@ invite.invite_config:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+    
+invite.invite_list:
+  path: 'invite/list'
+  defaults:
+    _controller: '\Drupal\invite\Controller\InviteList::view'
+    _title: 'Invite list'
+  requirements:
+    _permission: 'access administration pages'
