@@ -5,14 +5,7 @@
  * Default file for Invite Project.
  */
 
-/**
- * Validity constants.
- */
-define('INVITE_VALID', 1);
-define('INVITE_WITHDRAWN', 2);
-define('INVITE_USED', 3);
-define('INVITE_EXPIRED', 4);
-
+use Drupal\invite\InviteConstants;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\invite\Entity\Invite;
@@ -29,7 +22,7 @@ function invite_user_insert(EntityInterface $account) {
     $invite = Invite::load(reset($id));
     $invite->setInvitee($account);
     $invite->setJoined(REQUEST_TIME);
-    $invite->setStatus(INVITE_USED);
+    $invite->setStatus(InviteConstants::INVITE_USED);
     $invite->save();
     unset($_SESSION['invite_code']);
     // Add target role to user.

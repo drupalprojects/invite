@@ -2,6 +2,7 @@
 
 namespace Drupal\invite\Controller;
 
+use Drupal\invite\InviteConstants;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\invite\InviteAcceptEvent;
@@ -47,7 +48,7 @@ class InviteAccept extends ControllerBase {
       $type = 'error';
     }
     // Invite has already been used.
-    elseif ($invite->getStatus() == INVITE_USED) {
+    elseif ($invite->getStatus() == InviteConstants::INVITE_USED) {
       $message = $this->t('Sorry this invitation has already been used.');
       $type = 'error';
     }
