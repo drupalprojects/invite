@@ -52,6 +52,15 @@ class InviteAccept extends ControllerBase {
       $message = $this->t('Sorry this invitation has already been used.');
       $type = 'error';
     }
+
+    // Invite is expired.
+    elseif ($invite->expires->value < time()) {
+      $message = $this->t('Sorry this invitation is expired.');
+      $type = 'error';
+      $invite->setStatus(InviteConstants::INVITE_EXPIRED);
+      $invite->save();
+    }
+
     // Good to go!
     else {
       $_SESSION['invite_code'] = $invite->getRegCode();
