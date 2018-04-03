@@ -38,3 +38,11 @@ invite.invite_list:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+
+invite.invite_withdraw_form:
+  path: 'invite/withdraw/{invite}'
+  defaults:
+    _form: '\Drupal\invite\Form\InviteWithdrawForm'
+    _title: 'Withdraw Invite'
+  requirements:
+    _custom_access: '\Drupal\invite\Controller\InviteAccessController::withdrawInviteAccess'

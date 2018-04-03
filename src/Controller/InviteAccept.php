@@ -49,13 +49,19 @@ class InviteAccept extends ControllerBase {
     }
     // Invite has already been used.
     elseif ($invite->getStatus() == InviteConstants::INVITE_USED) {
-      $message = $this->t('Sorry this invitation has already been used.');
+      $message = $this->t('Sorry, this invitation has already been used.');
+      $type = 'error';
+    }
+
+    // Invite has already been withdrawn.
+    elseif ($invite->getStatus() == InviteConstants::INVITE_WITHDRAWN) {
+      $message = $this->t('Sorry, this invitation has already been withdrawn.');
       $type = 'error';
     }
 
     // Invite is expired.
     elseif ($invite->expires->value < time()) {
-      $message = $this->t('Sorry this invitation is expired.');
+      $message = $this->t('Sorry, this invitation is expired.');
       $type = 'error';
       $invite->setStatus(InviteConstants::INVITE_EXPIRED);
       $invite->save();
