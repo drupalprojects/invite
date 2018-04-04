@@ -46,3 +46,11 @@ invite.invite_withdraw_form:
     _title: 'Withdraw Invite'
   requirements:
     _custom_access: '\Drupal\invite\Controller\InviteAccessController::withdrawInviteAccess'
+
+invite.invite_resend_form:
+  path: 'invite/resend/{invite}'
+  defaults:
+    _form: '\Drupal\invite\Form\InviteResendForm'
+    _title: 'Resend Invite'
+  requirements:
+    _custom_access: '\Drupal\invite\Controller\InviteAccessController::resendInviteAccess'

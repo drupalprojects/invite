@@ -209,6 +209,13 @@ class Invite extends ContentEntityBase implements InviteInterface {
   /**
    * {@inheritdoc}
    */
+  public function isPublished() {
+    return (bool) $this->getEntityKey('status');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields['id'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('ID'))
@@ -313,6 +320,10 @@ class Invite extends ContentEntityBase implements InviteInterface {
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
       ->setDescription(t('The Unix timestamp when the invite was created.'));
+
+    $fields['changed'] = BaseFieldDefinition::create('changed')
+      ->setLabel(t('Changed'))
+      ->setDescription(t('The time that the entity was last edited.'));
 
     $fields['expires'] = BaseFieldDefinition::create('timestamp')
       ->setLabel(t('Expiration'))
