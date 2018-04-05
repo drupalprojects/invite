@@ -3,11 +3,40 @@
 namespace Drupal\invite\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Database\Connection;
+use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Active user list controller.
  */
 class InviteList extends ControllerBase {
+
+  /**
+   * Drupal\Core\Database\Driver\mysql\Connection definition.
+   *
+   * @var \Drupal\Core\Database\Driver\mysql\Connection
+   */
+  protected $database;
+
+  /**
+   * Constructs a new InviteList object.
+   *
+   * @param \Drupal\Core\Database\Connection $database
+   *   Connection database.
+   */
+  public function __construct(Connection $database) {
+    $this->database = $database;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('database')
+    );
+  }
 
   /**
    * Returns the active user list output.
@@ -20,12 +49,12 @@ class InviteList extends ControllerBase {
     $header = [
       ['data' => $this->t('Sender')],
       ['data' => $this->t('E-mail')],
+      ['data' => $this->t('Operations')],
     ];
 
-    $db = \Drupal::database();
-
-    $query = $db->select('invite', 'i');
+    $query = $this->database->select('invite', 'i');
     $query->fields('ufd', ['mail']);
+    $query->fields('i', ['id']);
     $query->fields('ie', ['field_invite_email_address_value']);
     $query->leftJoin('users', 'u', 'i.user_id = u.uid');
     $query->leftJoin('users_field_data', 'ufd', 'u.uid = ufd.uid');
@@ -38,10 +67,16 @@ class InviteList extends ControllerBase {
 
     $rows = [];
     foreach ($result as $row) {
+      $operations = [
+        '#type' => 'operations',
+        '#links' => $this->getOperations($row->id),
+        '#attributes' => [],
+      ];
       $rows[] = [
         'data' => [
           'mail' => $row->mail,
           'field_invite_email_address_value' => $row->field_invite_email_address_value,
+          'operations' => render($operations),
         ],
       ];
     }
@@ -57,6 +92,33 @@ class InviteList extends ControllerBase {
     ];
 
     return $output;
+  }
+
+  /**
+   * Get operations links like withdraw and resend invitation.
+   *
+   * @param int $invitation_id
+   *   Invite entity id (invite id).
+   *
+   * @return array
+   *   Array of withdraw and resend links.
+   */
+  public function getOperations($invitation_id) {
+    $links[] = [
+      'title' => $this->t('Withdraw'),
+      'url' => Url::fromRoute('invite.invite_withdraw_form',
+        ['invite' => $invitation_id],
+        ['attributes' => ['target' => '_blank']]
+      ),
+    ];
+    $links[] = [
+      'title' => $this->t('Resend'),
+      'url' => Url::fromRoute('invite.invite_resend_form',
+        ['invite' => $invitation_id],
+        ['attributes' => ['target' => '_blank']]
+      ),
+    ];
+    return $links;
   }
 
 }
