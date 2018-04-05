@@ -27,4 +27,9 @@ class InviteConstants {
    */
   const INVITE_EXPIRED = 4;
 
+  /**
+   * Flag for invite code.
+   */
+  const INVITE_SESSION_CODE = 'invite_code';
+
 }

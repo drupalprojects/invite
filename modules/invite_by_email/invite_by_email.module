@@ -5,6 +5,7 @@
  * Contains invite_by_email.module.
  */
 
+use Drupal\invite\InviteConstants;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -113,4 +114,38 @@ function invite_by_email_theme($existing, $type, $theme, $path) {
       'variables' => ['body' => NULL],
     ],
   ];
+}
+
+/**
+ * Loads Invite using information stored in session.
+ *
+ * @return bool|Invite
+ *   Return the Invite of FALSE otherwise.
+ */
+function invite_by_email_load_from_session() {
+  if (isset($_SESSION[InviteConstants::INVITE_SESSION_CODE])) {
+    /** @var \Drupal\invite\InviteInterface $invite */
+    $invite = \Drupal::entityManager()->getStorage('invite')->loadByProperties(['reg_code' => $_SESSION[InviteConstants::INVITE_SESSION_CODE]]);
+  }
+  if (!empty($invite)) {
+    return $invite;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Implements hook_form_FORMID_alter().
+ */
+function invite_by_email_form_user_register_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+
+  /** @var \Drupal\invite\InviteInterface $invite_object */
+  $invite = invite_by_email_load_from_session();
+
+  $invite_object = current($invite);
+  if ($invite_object) {
+    $form['account']['mail']['#default_value'] = $invite_object->field_invite_email_address->value;
+    $form['account']['mail']['#disabled'] = TRUE;
+  }
 }
