@@ -5,6 +5,7 @@ namespace Drupal\invite\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Url;
+use Drupal\invite\InviteConstants;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -20,6 +21,13 @@ class InviteList extends ControllerBase {
   protected $database;
 
   /**
+   * An array that contains invite status and related user readable name.
+   *
+   * @var array
+   */
+  public $inviteStatus;
+
+  /**
    * Constructs a new InviteList object.
    *
    * @param \Drupal\Core\Database\Connection $database
@@ -27,6 +35,12 @@ class InviteList extends ControllerBase {
    */
   public function __construct(Connection $database) {
     $this->database = $database;
+    $this->inviteStatus = [
+      InviteConstants::INVITE_VALID => $this->t('Active'),
+      InviteConstants::INVITE_WITHDRAWN => $this->t('Withdrawn'),
+      InviteConstants::INVITE_USED => $this->t('Used'),
+      InviteConstants::INVITE_EXPIRED => $this->t('Expired'),
+    ];
   }
 
   /**
@@ -47,6 +61,7 @@ class InviteList extends ControllerBase {
   public function view() {
 
     $header = [
+      ['data' => $this->t('Status')],
       ['data' => $this->t('Sender')],
       ['data' => $this->t('E-mail')],
       ['data' => $this->t('Operations')],
@@ -54,7 +69,7 @@ class InviteList extends ControllerBase {
 
     $query = $this->database->select('invite', 'i');
     $query->fields('ufd', ['mail']);
-    $query->fields('i', ['id']);
+    $query->fields('i', ['id', 'status']);
     $query->fields('ie', ['field_invite_email_address_value']);
     $query->leftJoin('users', 'u', 'i.user_id = u.uid');
     $query->leftJoin('users_field_data', 'ufd', 'u.uid = ufd.uid');
@@ -74,6 +89,7 @@ class InviteList extends ControllerBase {
       ];
       $rows[] = [
         'data' => [
+          'status' => $this->inviteStatus[$row->status],
           'mail' => $row->mail,
           'field_invite_email_address_value' => $row->field_invite_email_address_value,
           'operations' => render($operations),

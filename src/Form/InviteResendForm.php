@@ -2,6 +2,7 @@
 
 namespace Drupal\invite\Form;
 
+use Drupal\invite\InviteConstants;
 use Drupal\invite_by_email\Plugin\Invite\InviteByEmail;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -88,6 +89,11 @@ class InviteResendForm extends FormBase {
     $invite = $this->inviteStorage;
     $invite_by_email = new InviteByEmail();
     $invite_by_email->send($invite);
+
+    // Set invite status to active, if it was withdrawn or any other status.
+    $invite->set('status', InviteConstants::INVITE_VALID);
+    $invite->save();
+
     $url = Url::fromRoute('user.page');
     $form_state->setRedirectUrl($url);
   }
