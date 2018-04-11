@@ -89,7 +89,8 @@ class InviteWithdrawForm extends FormBase {
     $invite = $this->inviteStorage;
     $invite->setStatus(InviteConstants::INVITE_WITHDRAWN);
     $invite->save();
-    $url = Url::fromRoute('user.page');
+    drupal_set_message($this->t('The invitation has been withdrawn'));
+    $url = Url::fromRoute('invite.invite_list');
     $form_state->setRedirectUrl($url);
   }
 

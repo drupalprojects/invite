@@ -123,15 +123,13 @@ class InviteList extends ControllerBase {
     $links[] = [
       'title' => $this->t('Withdraw'),
       'url' => Url::fromRoute('invite.invite_withdraw_form',
-        ['invite' => $invitation_id],
-        ['attributes' => ['target' => '_blank']]
+        ['invite' => $invitation_id]
       ),
     ];
     $links[] = [
       'title' => $this->t('Resend'),
       'url' => Url::fromRoute('invite.invite_resend_form',
-        ['invite' => $invitation_id],
-        ['attributes' => ['target' => '_blank']]
+        ['invite' => $invitation_id]
       ),
     ];
     return $links;

@@ -94,7 +94,7 @@ class InviteResendForm extends FormBase {
     $invite->set('status', InviteConstants::INVITE_VALID);
     $invite->save();
 
-    $url = Url::fromRoute('user.page');
+    $url = Url::fromRoute('invite.invite_list');
     $form_state->setRedirectUrl($url);
   }
 
