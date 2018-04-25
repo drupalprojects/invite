@@ -2,6 +2,7 @@
 
 namespace Drupal\invite\Form;
 
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\invite\InviteConstants;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -33,16 +34,26 @@ class InviteWithdrawForm extends FormBase {
   protected $entityManager;
 
   /**
+   * The Messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
    * Constructs a InviteAcceptController object.
    *
    * @param \Drupal\Core\Entity\EntityStorageInterface $invite_storage
    *   Invite storage.
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger service.
    */
-  public function __construct(EntityStorageInterface $invite_storage, EntityManagerInterface $entity_manager) {
+  public function __construct(EntityStorageInterface $invite_storage, EntityManagerInterface $entity_manager, MessengerInterface $messenger) {
     $this->entityManager = $entity_manager;
     $this->inviteStorage = $invite_storage;
+    $this->messenger = $messenger;
   }
 
   /**
@@ -52,7 +63,8 @@ class InviteWithdrawForm extends FormBase {
     $entity_manager = $container->get('entity.manager');
     return new static(
       $entity_manager->getStorage('invite'),
-      $container->get('entity.manager')
+      $container->get('entity.manager'),
+      $container->get('messenger')
     );
   }
 
@@ -89,7 +101,7 @@ class InviteWithdrawForm extends FormBase {
     $invite = $this->inviteStorage;
     $invite->setStatus(InviteConstants::INVITE_WITHDRAWN);
     $invite->save();
-    drupal_set_message($this->t('The invitation has been withdrawn'));
+    $this->messenger->addStatus($this->t('The invitation has been withdrawn'));
     $url = Url::fromRoute('invite.invite_list');
     $form_state->setRedirectUrl($url);
   }

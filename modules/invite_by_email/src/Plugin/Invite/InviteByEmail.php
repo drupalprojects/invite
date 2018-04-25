@@ -2,9 +2,11 @@
 
 namespace Drupal\invite_by_email\Plugin\Invite;
 
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\invite\InvitePluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class for Invite by Email.
@@ -17,6 +19,32 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 class InviteByEmail implements InvitePluginInterface {
 
   use StringTranslationTrait;
+
+  /**
+   * The Messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
+   * Constructs InviteByEmail .
+   *
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger service.
+   */
+  public function __construct(MessengerInterface $messenger) {
+    $this->messenger = $messenger;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('messenger')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -57,7 +85,7 @@ class InviteByEmail implements InvitePluginInterface {
 
     if ($result) {
 
-      drupal_set_message($this->t('Invitation has been sent.'));
+      $this->messenger->addStatus($this->t('Invitation has been sent.'));
 
       $mail_user = $message['to'];
 
@@ -67,7 +95,7 @@ class InviteByEmail implements InvitePluginInterface {
     }
     else {
 
-      drupal_set_message($this->t('Failed to send a message.'), 'error');
+      $this->messenger->addStatus($this->t('Failed to send a message.'), 'error');
 
       \Drupal::logger('invite')->error('Failed to send a message.');
     }

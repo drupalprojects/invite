@@ -2,6 +2,7 @@
 
 namespace Drupal\invite\Form;
 
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\invite\InviteConstants;
 use Drupal\invite_by_email\Plugin\Invite\InviteByEmail;
 use Drupal\Core\Form\FormBase;
@@ -34,16 +35,26 @@ class InviteResendForm extends FormBase {
   protected $entityManager;
 
   /**
+   * The Messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
    * Constructs a InviteAcceptController object.
    *
    * @param \Drupal\Core\Entity\EntityStorageInterface $invite_storage
    *   Invite storage.
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger service.
    */
-  public function __construct(EntityStorageInterface $invite_storage, EntityManagerInterface $entity_manager) {
+  public function __construct(EntityStorageInterface $invite_storage, EntityManagerInterface $entity_manager, MessengerInterface $messenger) {
     $this->entityManager = $entity_manager;
     $this->inviteStorage = $invite_storage;
+    $this->messenger = $messenger;
   }
 
   /**
@@ -52,7 +63,9 @@ class InviteResendForm extends FormBase {
   public static function create(ContainerInterface $container) {
     $entity_manager = $container->get('entity.manager');
     return new static(
-        $entity_manager->getStorage('invite'), $container->get('entity.manager')
+        $entity_manager->getStorage('invite'),
+        $container->get('entity.manager'),
+        $container->get('messenger')
     );
   }
 
@@ -87,7 +100,7 @@ class InviteResendForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     /** @var \Drupal\invite\InviteInterface $invite */
     $invite = $this->inviteStorage;
-    $invite_by_email = new InviteByEmail();
+    $invite_by_email = new InviteByEmail($this->messenger);
     $invite_by_email->send($invite);
 
     // Set invite status to active, if it was withdrawn or any other status.

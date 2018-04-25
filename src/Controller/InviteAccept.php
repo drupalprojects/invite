@@ -2,6 +2,7 @@
 
 namespace Drupal\invite\Controller;
 
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\invite\InviteConstants;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Controller\ControllerBase;
@@ -15,22 +16,36 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class InviteAccept extends ControllerBase {
 
+  /**
+   * The event dispatcher.
+   *
+   * @var \Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher
+   */
   public $dispatcher;
 
   /**
-   * Functin for create.
+   * The Messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('event_dispatcher')
+      $container->get('event_dispatcher'),
+      $container->get('messenger')
     );
   }
 
   /**
-   * Construct.
+   * Construct InviteAccept object.
    */
-  public function __construct(ContainerAwareEventDispatcher $dispatcher) {
+  public function __construct(ContainerAwareEventDispatcher $dispatcher, MessengerInterface $messenger) {
     $this->dispatcher = $dispatcher;
+    $this->messenger = $messenger;
   }
 
   /**
@@ -83,7 +98,7 @@ class InviteAccept extends ControllerBase {
     ]);
 
     $this->dispatcher->dispatch('invite_accept', $invite_accept);
-    drupal_set_message($message, $type);
+    $this->messenger->addStatus($message, $type);
 
     return $this->redirect($redirect);
   }

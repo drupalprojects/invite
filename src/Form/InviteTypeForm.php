@@ -7,6 +7,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\invite\Entity\InviteSender;
 use Drupal\invite\InvitePluginManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -26,6 +27,13 @@ class InviteTypeForm extends EntityForm {
   public $pluginManager;
 
   /**
+   * The Messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -33,17 +41,19 @@ class InviteTypeForm extends EntityForm {
       $container->get('entity.manager'),
       $container->get('plugin.manager.invite'),
       $container->get('plugin.manager.block'),
-      $container->get('database')
+      $container->get('database'),
+      $container->get('messenger')
     );
   }
 
   /**
    * {@inheritdoc}
    */
-  public function __construct(EntityManagerInterface $entity_manager, InvitePluginManager $plugin_manager, BlockManager $block_plugin_manager, Connection $database) {
+  public function __construct(EntityManagerInterface $entity_manager, InvitePluginManager $plugin_manager, BlockManager $block_plugin_manager, Connection $database, MessengerInterface $messenger) {
     $this->pluginManager = $plugin_manager;
     $this->database = $database;
     $this->block_manager = $block_plugin_manager;
+    $this->messenger = $messenger;
   }
 
   /**
@@ -205,13 +215,13 @@ class InviteTypeForm extends EntityForm {
 
     switch ($status) {
       case SAVED_NEW:
-        drupal_set_message($this->t('Created the %label Invite type.', [
+        $this->messenger->addStatus($this->t('Created the %label Invite type.', [
           '%label' => $entity->label(),
         ]));
         break;
 
       default:
-        drupal_set_message($this->t('Saved the %label Invite type.', [
+        $this->messenger->addStatus($this->t('Saved the %label Invite type.', [
           '%label' => $entity->label(),
         ]));
     }
