@@ -29,7 +29,6 @@ use Drupal\user\UserInterface;
  *       "default" = "Drupal\invite\Form\InviteForm",
  *       "add" = "Drupal\invite\Form\InviteForm",
  *       "edit" = "Drupal\invite\Form\InviteForm",
- *       "delete" = "Drupal\invite\Form\InviteDeleteForm",
  *     },
  *     "access" = "Drupal\invite\InviteAccessControlHandler",
  *     "route_provider" = {
@@ -48,7 +47,6 @@ use Drupal\user\UserInterface;
  *     "canonical" = "/admin/structure/invite/{invite}",
  *     "add-form" = "/admin/structure/invite/add",
  *     "edit-form" = "/admin/structure/invite/{invite}/edit",
- *     "delete-form" = "/admin/structure/invite/{invite}/delete",
  *     "collection" = "/admin/structure/invite",
  *   },
  *   field_ui_base_route = "invite.settings"
