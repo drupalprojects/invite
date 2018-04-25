@@ -2,8 +2,11 @@
 
 namespace Drupal\invite\Form;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteProvider;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class InviteConfig.
@@ -11,6 +14,36 @@ use Drupal\Core\Form\FormStateInterface;
  * @package Drupal\invite\Form
  */
 class InviteConfig extends ConfigFormBase {
+
+  /**
+   * Route provider.
+   *
+   * @var \Drupal\Core\Routing\RouteProvider
+   */
+  protected $routeProvider;
+
+  /**
+   * Constructs a \Drupal\system\ConfigFormBase object.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The factory for configuration objects.
+   * @param \Drupal\Core\Routing\RouteProvider $routeProvider
+   *   The route provider service.
+   */
+  public function __construct(ConfigFactoryInterface $config_factory, RouteProvider $routeProvider) {
+    parent::__construct($config_factory);
+    $this->routeProvider = $routeProvider;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('config.factory'),
+      $container->get('router.route_provider')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -62,9 +95,7 @@ class InviteConfig extends ConfigFormBase {
 
     $route_name = $form_state->getValue('accept_redirect');
 
-    $route_provider = \Drupal::service('router.route_provider');
-
-    $route_exists = count($route_provider->getRoutesByNames([$route_name])) === 1;
+    $route_exists = count($this->routeProvider->getRoutesByNames([$route_name])) === 1;
 
     if (!$route_exists) {
       $form_state->setErrorByName('accept_redirect', t('Route "@route" does not exist.', ['@route' => $route_name]));
