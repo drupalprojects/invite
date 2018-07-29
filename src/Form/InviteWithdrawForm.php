@@ -2,6 +2,7 @@
 
 namespace Drupal\invite\Form;
 
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\invite\InviteConstants;
 use Drupal\Core\Form\FormBase;
@@ -9,7 +10,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\invite\InviteInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Url;
 
 /**
@@ -27,11 +27,11 @@ class InviteWithdrawForm extends FormBase {
   protected $inviteStorage;
 
   /**
-   * The entity manager.
+   * The entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\Core\Entity\EntityTypeManager
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
    * The Messenger service.
@@ -45,13 +45,13 @@ class InviteWithdrawForm extends FormBase {
    *
    * @param \Drupal\Core\Entity\EntityStorageInterface $invite_storage
    *   Invite storage.
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
+   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   *   The entity type manager.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger service.
    */
-  public function __construct(EntityStorageInterface $invite_storage, EntityManagerInterface $entity_manager, MessengerInterface $messenger) {
-    $this->entityManager = $entity_manager;
+  public function __construct(EntityStorageInterface $invite_storage, EntityTypeManager $entityTypeManager, MessengerInterface $messenger) {
+    $this->entityTypeManager = $entityTypeManager;
     $this->inviteStorage = $invite_storage;
     $this->messenger = $messenger;
   }
@@ -60,10 +60,10 @@ class InviteWithdrawForm extends FormBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    $entity_manager = $container->get('entity.manager');
+    $entity_type_manager = $container->get('entity_type.manager');
     return new static(
-      $entity_manager->getStorage('invite'),
-      $container->get('entity.manager'),
+      $entity_type_manager->getStorage('invite'),
+      $container->get('entity_type.manager'),
       $container->get('messenger')
     );
   }

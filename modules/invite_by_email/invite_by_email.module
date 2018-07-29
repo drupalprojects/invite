@@ -125,7 +125,7 @@ function invite_by_email_theme($existing, $type, $theme, $path) {
 function invite_by_email_load_from_session() {
   if (isset($_SESSION[InviteConstants::INVITE_SESSION_CODE])) {
     /** @var \Drupal\invite\InviteInterface $invite */
-    $invite = \Drupal::entityManager()->getStorage('invite')->loadByProperties(['reg_code' => $_SESSION[InviteConstants::INVITE_SESSION_CODE]]);
+    $invite = \Drupal::entityTypeManager()->getStorage('invite')->loadByProperties(['reg_code' => $_SESSION[InviteConstants::INVITE_SESSION_CODE]]);
   }
   if (!empty($invite)) {
     return $invite;

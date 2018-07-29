@@ -5,7 +5,6 @@ namespace Drupal\invite\Form;
 use Drupal\Core\Block\BlockManager;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityForm;
-use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\invite\Entity\InviteSender;
@@ -38,7 +37,6 @@ class InviteTypeForm extends EntityForm {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity.manager'),
       $container->get('plugin.manager.invite'),
       $container->get('plugin.manager.block'),
       $container->get('database'),
@@ -49,7 +47,7 @@ class InviteTypeForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public function __construct(EntityManagerInterface $entity_manager, InvitePluginManager $plugin_manager, BlockManager $block_plugin_manager, Connection $database, MessengerInterface $messenger) {
+  public function __construct(InvitePluginManager $plugin_manager, BlockManager $block_plugin_manager, Connection $database, MessengerInterface $messenger) {
     $this->pluginManager = $plugin_manager;
     $this->database = $database;
     $this->block_manager = $block_plugin_manager;

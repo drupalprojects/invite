@@ -34,7 +34,7 @@ class InviteByEmailBlockForm extends FormBase {
     ];
 
     if (!$data['use_default'] && $data['subject_editable']) {
-      $invite_email_subject_default = \Drupal::service('entity.manager')->getFieldDefinitions('invite', 'invite')['field_invite_email_subject']->getDefaultValueLiteral()[0]['value'];
+      $invite_email_subject_default = \Drupal::service('entity_field.manager')->getFieldDefinitions('invite', 'invite')['field_invite_email_subject']->getDefaultValueLiteral()[0]['value'];
 
       $form['email_subject'] = [
         '#type' => 'textfield',
