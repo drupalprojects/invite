@@ -2,7 +2,9 @@
 
 namespace Drupal\invite_by_email\Plugin\Invite;
 
+use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\invite\InvitePluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -16,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   label = @Translation("Invite By Email")
  * )
  */
-class InviteByEmail implements InvitePluginInterface {
+class InviteByEmail extends PluginBase implements InvitePluginInterface, ContainerFactoryPluginInterface {
 
   use StringTranslationTrait;
 
@@ -28,20 +30,33 @@ class InviteByEmail implements InvitePluginInterface {
   protected $messenger;
 
   /**
-   * Constructs InviteByEmail .
+   * Getter for the messenger service.
+   *
+   * @return \Drupal\Core\Messenger\MessengerInterface
+   */
+  public function getMessenger() {
+    return $this->messenger;
+  }
+
+  /**
+   * Constructs invite_by_email plugin.
    *
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger service.
    */
-  public function __construct(MessengerInterface $messenger) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, MessengerInterface $messenger) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->messenger = $messenger;
   }
 
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
       $container->get('messenger')
     );
   }
@@ -85,7 +100,7 @@ class InviteByEmail implements InvitePluginInterface {
 
     if ($result) {
 
-      $this->messenger->addStatus($this->t('Invitation has been sent.'));
+      $this->getMessenger()->addStatus($this->t('Invitation has been sent.'));
 
       $mail_user = $message['to'];
 
@@ -95,7 +110,7 @@ class InviteByEmail implements InvitePluginInterface {
     }
     else {
 
-      $this->messenger->addStatus($this->t('Failed to send a message.'), 'error');
+      $this->getMessenger()->addStatus($this->t('Failed to send a message.'), 'error');
 
       \Drupal::logger('invite')->error('Failed to send a message.');
     }
@@ -103,3 +118,4 @@ class InviteByEmail implements InvitePluginInterface {
   }
 
 }
+

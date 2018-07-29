@@ -3,6 +3,7 @@
 namespace Drupal\invite_link\Plugin\Invite;
 
 use Drupal\invite\InvitePluginInterface;
+use Drupal\Component\Plugin\PluginBase;
 
 /**
  * Example plugin. Simplest use case.
@@ -12,7 +13,7 @@ use Drupal\invite\InvitePluginInterface;
  *   label = @Translation("Invite Link")
  * )
  */
-class InviteLink implements InvitePluginInterface {
+class InviteLink extends PluginBase implements InvitePluginInterface {
 
   /**
    * {@inheritdoc}
